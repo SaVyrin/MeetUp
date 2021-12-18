@@ -16,22 +16,23 @@
                         <Image url="@maleAva.jpg" />
                      </image>
                   </ImageView>
+                  <Label layoutX="40.0" layoutY="4.0" text="Label" visible="false" />
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="292.0" prefWidth="114.0">
                <children>
-                  <Button layoutY="232.0" mnemonicParsing="false" prefHeight="54.0" prefWidth="114.0" onAction="#openAcquaintance" text="Перейти к знакомствам" wrapText="true" />
+                  <Button layoutY="232.0" mnemonicParsing="false" onAction="#openAcquaintance" prefHeight="54.0" prefWidth="114.0" text="Перейти к знакомствам" wrapText="true" />
                </children>
             </AnchorPane>
          </children>
       </VBox>
       <VBox prefHeight="400.0" prefWidth="507.0">
          <children>
-            <TextArea editable="false" prefHeight="450.0" prefWidth="474.0" />
+            <TextArea fx:id="chatArea" editable="false" prefHeight="450.0" prefWidth="474.0" />
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <TextField prefHeight="31.0" prefWidth="394.0" />
-                  <Button mnemonicParsing="false" text="Отправить" />
+                  <TextField fx:id="messageBox" prefHeight="31.0" prefWidth="394.0" />
+                  <Button mnemonicParsing="false" onAction="#sendButtonAction" text="Отправить" />
                </children>
             </HBox>
          </children>

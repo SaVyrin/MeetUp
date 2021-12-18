@@ -1,11 +1,10 @@
 package scene.controllers;
 
-import acquaintance.Finder;
-import acquaintance.People;
-import acquaintance.Person;
-import client.ClientApp;
+import acquaintance.*;
+import acquaintance.finders.CoupleFinder;
+import acquaintance.finders.Finder;
+import acquaintance.finders.FriendFinder;
 import com.example.oop_task_1.Frame;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -59,7 +58,7 @@ public class SceneController {
 
     @FXML
     private void findFriend() throws MalformedURLException {
-        peopleToShow = Finder.findFriend(people, loggedInPerson);
+        findPeople(new FriendFinder(people, loggedInPerson));
         leftPersonChanger.setVisible(true);
         rightPersonChanger.setVisible(true);
         acquaintance.setVisible(true);
@@ -69,12 +68,16 @@ public class SceneController {
 
     @FXML
     private void findCouple() throws MalformedURLException {
-        peopleToShow = Finder.findCouple(people, loggedInPerson);
+        findPeople(new CoupleFinder(people, loggedInPerson));
         leftPersonChanger.setVisible(true);
         rightPersonChanger.setVisible(true);
         acquaintance.setVisible(true);
         currShownPersonIndex = 0;
         nextPersonToShow();
+    }
+
+    private void findPeople(Finder finder) {
+        peopleToShow = finder.find();
     }
 
     @FXML

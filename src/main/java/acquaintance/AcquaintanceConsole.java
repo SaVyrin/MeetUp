@@ -1,6 +1,9 @@
 package acquaintance;
 
-import java.util.ArrayList;
+import acquaintance.finders.CoupleFinder;
+import acquaintance.finders.Finder;
+import acquaintance.finders.FriendFinder;
+
 import java.util.List;
 
 public class AcquaintanceConsole {
@@ -14,19 +17,19 @@ public class AcquaintanceConsole {
 
     public Person acquaintance(String choice) {
         switch (choice) {
-            case "couple": {
-                 List<Person> found = Finder.findCouple(people, newPerson);
-                 if (!found.isEmpty()){
-                     return found.get(0);
-                 }
-                break;
-            }
-            case "friend": {
-                List<Person> found = Finder.findFriend(people, newPerson);
-                if (!found.isEmpty()){
+            case "couple" -> {
+                Finder friendFinder = new FriendFinder(people, newPerson);
+                List<Person> found = friendFinder.find();
+                if (!found.isEmpty()) {
                     return found.get(0);
                 }
-                break;
+            }
+            case "friend" -> {
+                Finder coupleFinder = new CoupleFinder(people, newPerson);
+                List<Person> found = coupleFinder.find();
+                if (!found.isEmpty()) {
+                    return found.get(0);
+                }
             }
         }
         return null;

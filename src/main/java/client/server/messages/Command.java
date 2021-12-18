@@ -1,10 +1,10 @@
-package client;
+package client.server.messages;
 
 public enum Command {
-    GAME("GAME"),
-    BET("BET"),
-    RESP("RESP"),
-    END("END");
+    MESSAGE("MESSAGE"),
+    SERVER("SERVER"),
+    LON_IN("LOG_IN"),
+    LOG_OUT("LOG_OUT");
 
     public static final String SEPARATOR = ":";
 

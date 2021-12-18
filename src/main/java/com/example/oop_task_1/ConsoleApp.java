@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Console {
+public class ConsoleApp {
     public static void main(String[] args) {
         // todo: привязать к базе данных(по sql по ходу) и сделать GUI, где будет выбор из нескольких людей
         Scanner scanner = new Scanner(System.in);
@@ -38,33 +38,31 @@ public class Console {
             AcquaintanceConsole acq = new AcquaintanceConsole(people, newPerson);
             int choice = scanner.nextInt();
             switch (choice) {
-                case 1: {
+                case 1 -> {
                     Person acquaintance = acq.acquaintance("couple");
                     if (acquaintance != null) {
                         System.out.println("Вы познакомились с " + acquaintance.getName());
                     } else {
                         System.out.println("Подходящей пары не нашлось");
                     }
-                    break;
                 }
-                case 2: {
+                case 2 -> {
                     Person acquaintance = acq.acquaintance("friend");
                     if (acquaintance != null) {
                         System.out.println("Вы познакомились с " + acquaintance.getName());
                     } else {
                         System.out.println("Подходящего друга не нашлось");
                     }
-                    break;
                 }
             }
 
             System.out.println("Завершить - 1, нет - любая цифра");
             int again = scanner.nextInt();
             switch (again) {
-                case 1: {
+                case 1 -> {
                     break meetUp;
                 }
-                default: {
+                default -> {
                     continue meetUp;
                 }
             }

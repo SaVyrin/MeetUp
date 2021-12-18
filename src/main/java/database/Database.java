@@ -12,22 +12,13 @@ public class Database {
     private static final String dbLogin = "root";
     private static final String dbPassword = "root";
 
-    public List<Person> getPerson(String personLogin, String personPassword) {
-        String query;
-        if (!personLogin.equals("") && !personPassword.equals("")) {
-            query = "SELECT * FROM meetup_test WHERE login = ? AND password = ?";
-        } else {
-            query = "SELECT * FROM meetup_test";
-        }
+    public List<Person> getPeopleFromDB() {
+        String query = "SELECT * FROM meetup_test";
 
         // opening database connection to MySQL server
         try (Connection connection = DriverManager.getConnection(connectionString, dbLogin, dbPassword);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {    // getting Statement object to execute query
 
-            if (!personLogin.equals("") && !personPassword.equals("")) {
-                preparedStatement.setString(1, personLogin);
-                preparedStatement.setString(2, personPassword);
-            }
             ResultSet queryResult = preparedStatement.executeQuery(); // executing SELECT query
 
             List<Person> personList = new ArrayList<>();
@@ -46,6 +37,42 @@ public class Database {
             }
 
             return personList;
+
+        } catch (SQLException sqlEx) {
+            sqlEx.printStackTrace();
+        }
+        return null;
+    }
+
+    public Person getPersonFromDB(String personLogin, String personPassword) {
+        String query = "SELECT * FROM meetup_test WHERE login = ? AND password = ?";
+
+        // opening database connection to MySQL server
+        try (Connection connection = DriverManager.getConnection(connectionString, dbLogin, dbPassword);
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {    // getting Statement object to execute query
+
+            preparedStatement.setString(1, personLogin);
+            preparedStatement.setString(2, personPassword);
+
+            ResultSet queryResult = preparedStatement.executeQuery(); // executing SELECT query
+
+            List<Person> personList = new ArrayList<>();
+            while (queryResult.next()) {
+                int id = Integer.parseInt(queryResult.getString(1));
+                String login = queryResult.getString(2);
+                String password = queryResult.getString(3);
+                String name = queryResult.getString(4);
+                String surname = queryResult.getString(5);
+                int age = Integer.parseInt(queryResult.getString(6));
+                String sex = queryResult.getString(7);
+                String city = queryResult.getString(8);
+                String interestsString = queryResult.getString(9);
+                List<String> interests = new ArrayList<>(Arrays.asList(interestsString.split(",")));
+
+                personList.add(new Person(id, login, password, name, surname, age, sex, city, interests));
+            }
+
+            return personList.get(0);
 
         } catch (SQLException sqlEx) {
             sqlEx.printStackTrace();
