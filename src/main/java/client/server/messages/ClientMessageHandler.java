@@ -1,14 +1,14 @@
 package client.server.messages;
 
 import javafx.scene.control.TextArea;
-import scene.controllers.ChatController;
+import fxml.controllers.ChatController;
 
 import java.io.*;
 import java.net.Socket;
 
 public class ClientMessageHandler implements MessageHandler {
 
-    private Socket socket;
+    private final Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
 
@@ -44,14 +44,13 @@ public class ClientMessageHandler implements MessageHandler {
         new Thread(() -> {
             while (socket.isConnected()) {
                 try {
-                    System.out.println("received from server");
-
                     StringBuilder messageFromServer = new StringBuilder();
                     String read;
                     while (!(read = bufferedReader.readLine()).equals("")) {
                         messageFromServer.append(read).append("\n");
                     }
-                    ChatController.addMessage(messageFromServer.toString(), textArea);
+
+                    ChatController.addMessageToTheChat(messageFromServer.toString(), textArea);
                 } catch (IOException e) {
                     e.printStackTrace();
                     System.out.println("Error receiving message from a server");
@@ -75,7 +74,7 @@ public class ClientMessageHandler implements MessageHandler {
             }
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Error closingEverything");
+            System.out.println("Error closing everything");
         }
     }
 }

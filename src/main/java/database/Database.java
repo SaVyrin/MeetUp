@@ -15,11 +15,10 @@ public class Database {
     public List<Person> getPeopleFromDB() {
         String query = "SELECT * FROM meetup_test";
 
-        // opening database connection to MySQL server
         try (Connection connection = DriverManager.getConnection(connectionString, dbLogin, dbPassword);
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {    // getting Statement object to execute query
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-            ResultSet queryResult = preparedStatement.executeQuery(); // executing SELECT query
+            ResultSet queryResult = preparedStatement.executeQuery();
 
             List<Person> personList = new ArrayList<>();
             while (queryResult.next()) {
@@ -47,7 +46,6 @@ public class Database {
     public Person getPersonFromDB(String personLogin, String personPassword) {
         String query = "SELECT * FROM meetup_test WHERE login = ? AND password = ?";
 
-        // opening database connection to MySQL server
         try (Connection connection = DriverManager.getConnection(connectionString, dbLogin, dbPassword);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {    // getting Statement object to execute query
 

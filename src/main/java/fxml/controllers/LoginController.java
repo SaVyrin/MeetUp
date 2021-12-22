@@ -1,8 +1,6 @@
-package scene.controllers;
+package fxml.controllers;
 
 import acquaintance.Person;
-//import client.ClientApp;
-//import client.ClientApp;
 import com.example.oop_task_1.Frame;
 import database.Database;
 import javafx.fxml.FXML;
@@ -14,7 +12,6 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class LoginController {
-
     @FXML
     private TextField inputLogin;
     @FXML
@@ -27,22 +24,19 @@ public class LoginController {
         Database loginDB = new Database();
         Person loggedInPerson = loginDB.getPersonFromDB(login, password);
 
-        FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("scene.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/scene.fxml"));
         Scene secondScene = new Scene(fxmlLoader.load(), 800, 800);
 
         Stage currentStage = (Stage) inputLogin.getScene().getWindow();
         currentStage.setScene(secondScene);
 
-        //ClientApp client = new ClientApp("localhost", 9999);
-        //client.start();
-
-        SceneController controller = fxmlLoader.getController(); // get controller
-        controller.setLoggedInPerson(loggedInPerson); // set params for controller
+        SceneController controller = fxmlLoader.getController();
+        controller.setLoggedInPerson(loggedInPerson);
     }
 
     @FXML
     public void onRegisterButtonClick() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("register.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/register.fxml"));
         Scene changeScene = new Scene(fxmlLoader.load(), 800, 800);
 
         Stage currentStage = (Stage) inputLogin.getScene().getWindow();

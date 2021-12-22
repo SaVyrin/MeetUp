@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="442.0"
+      prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="fxml.controllers.RegisterController">
+    <TextField fx:id="inputLogin" promptText="Логин"/>
+    <TextField fx:id="inputPassword" promptText="Пароль"/>
+    <TextField fx:id="inputSurname" promptText="Фамилия"/>
+    <TextField fx:id="inputName" promptText="Имя"/>
+    <TextField fx:id="inputAge" promptText="Возраст"/>
+    <HBox prefHeight="26.0" prefWidth="600.0">
+        <RadioButton mnemonicParsing="false" text="М">
+            <toggleGroup>
+                <ToggleGroup fx:id="inputSex"/>
+            </toggleGroup>
+        </RadioButton>
+        <RadioButton mnemonicParsing="false" text="Ж" toggleGroup="$inputSex"/>
+    </HBox>
+    <TextField fx:id="inputCity" promptText="Город"/>
+    <GridPane fx:id="inputInterests">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+        </rowConstraints>
+        <CheckBox mnemonicParsing="false" text="Спорт"/>
+        <CheckBox mnemonicParsing="false" text="Музыка" GridPane.columnIndex="1"/>
+        <CheckBox mnemonicParsing="false" text="Здоровье" GridPane.rowIndex="1"/>
+        <CheckBox mnemonicParsing="false" text="Танцы" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        <CheckBox mnemonicParsing="false" text="Английский" GridPane.rowIndex="2"/>
+        <CheckBox mnemonicParsing="false" text="Мода" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+        <CheckBox mnemonicParsing="false" prefHeight="21.0" prefWidth="101.0" text="Кино" GridPane.rowIndex="3"/>
+    </GridPane>
+    <Button mnemonicParsing="false" onAction="#onRegisterButtonClick" text="Зарегистрироваться"/>
+    <Button mnemonicParsing="false" onAction="#onLoginButtonClick" text="Войти"/>
+</VBox>

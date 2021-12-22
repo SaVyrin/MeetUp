@@ -2,14 +2,12 @@ package client.server.messages;
 
 import javafx.scene.control.TextArea;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 
 public class ServerMessageHandler implements MessageHandler {
 
-    private Socket socket;
+    private final Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
 
@@ -19,21 +17,22 @@ public class ServerMessageHandler implements MessageHandler {
         return chatMessages;
     }
 
-    public ServerMessageHandler(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
+    public ServerMessageHandler(Socket socket) {
         this.socket = socket;
-        this.bufferedReader = bufferedReader;
-        this.bufferedWriter = bufferedWriter;
+        try {
+            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void sendMessage(String message) {
-        System.out.println("sent to client");
-
         try {
             bufferedWriter.write(message);
             bufferedWriter.newLine();
             bufferedWriter.flush();
-            System.out.println("received");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -50,10 +49,9 @@ public class ServerMessageHandler implements MessageHandler {
             while (socket.isConnected()) {
                 try {
                     String messageFromClient = bufferedReader.readLine();
-                    //ChatController.addMessage(messageFromClient, textArea);
                     chatMessages += messageFromClient + "\n";
                     sendMessage(chatMessages);
-                    System.out.println(messageFromClient);
+
                     System.out.println(chatMessages);
                 } catch (IOException e) {
                     e.printStackTrace();

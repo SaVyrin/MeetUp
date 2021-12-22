@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-
+<?import javafx.scene.text.Text?>
 <TitledPane animated="false" collapsible="false" ellipsisString="" maxHeight="-Infinity" maxWidth="-Infinity"
             minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="647.0" text="MeetUP"
             xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="scene.controllers.SceneController">
+            fx:controller="fxml.controllers.SceneController">
     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
         <BorderPane layoutX="-1.0" prefHeight="371.0" prefWidth="600.0">
             <top>
@@ -35,23 +33,23 @@
                             text="Найти пару"/>
                     <Button layoutX="393.0" layoutY="-1.0" mnemonicParsing="false" onAction="#findFriend"
                             text="Найти друга"/>
-                    <Button fx:id="acquaintance" layoutX="266.0" layoutY="-1.0" mnemonicParsing="false"
+                    <Button fx:id="acquaintanceButton" layoutX="266.0" layoutY="-1.0" mnemonicParsing="false"
                             onAction="#acquaintance" text="Познакомиться" visible="false"/>
                 </AnchorPane>
             </bottom>
             <right>
                 <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: rgb(211, 211, 211);"
                             BorderPane.alignment="CENTER">
-                    <Button fx:id="rightPersonChanger" layoutX="80.0" layoutY="80.0" mnemonicParsing="false"
-                            onAction="#rightPersonToShowChanger" text="&gt;" textAlignment="CENTER"
+                    <Button fx:id="rightPersonChangeButton" layoutX="80.0" layoutY="80.0" mnemonicParsing="false"
+                            onAction="#rightPersonToShowChange" text="&gt;" textAlignment="CENTER"
                             visible="false"/>
                 </AnchorPane>
             </right>
             <left>
                 <AnchorPane prefHeight="212.0" prefWidth="200.0" style="-fx-background-color: rgb(211,211,211);"
                             BorderPane.alignment="CENTER">
-                    <Button fx:id="leftPersonChanger" layoutX="80.0" layoutY="80.0" mnemonicParsing="false"
-                            onAction="#leftPersonToShowChanger" text="&lt;" textAlignment="CENTER"
+                    <Button fx:id="leftPersonChangeButton" layoutX="80.0" layoutY="80.0" mnemonicParsing="false"
+                            onAction="#leftPersonToShowChange" text="&lt;" textAlignment="CENTER"
                             visible="false"/>
                 </AnchorPane>
             </left>

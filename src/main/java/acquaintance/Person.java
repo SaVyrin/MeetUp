@@ -15,7 +15,9 @@ public class Person {
     private final List<String> interests;
     private int points = 0;
 
-    public Person(int id, String login, String password, String name, String surname, int age, String sex, String city, List<String> interests) {
+    public Person(int id, String login, String password,
+                  String name, String surname, int age, String sex,
+                  String city, List<String> interests) {
         this.id = id;
         this.login = login;
         this.password = password;

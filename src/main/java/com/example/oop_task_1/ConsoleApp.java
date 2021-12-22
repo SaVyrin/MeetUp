@@ -10,10 +10,8 @@ import java.util.Scanner;
 
 public class ConsoleApp {
     public static void main(String[] args) {
-        // todo: привязать к базе данных(по sql по ходу) и сделать GUI, где будет выбор из нескольких людей
         Scanner scanner = new Scanner(System.in);
 
-        meetUp:
         while (true) {
             System.out.println("Введите свои данные: Имя, Фамилия, возраст, пол, город, интересы");
 
@@ -58,13 +56,8 @@ public class ConsoleApp {
 
             System.out.println("Завершить - 1, нет - любая цифра");
             int again = scanner.nextInt();
-            switch (again) {
-                case 1 -> {
-                    break meetUp;
-                }
-                default -> {
-                    continue meetUp;
-                }
+            if (again == 1) {
+                break;
             }
         }
     }

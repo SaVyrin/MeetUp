@@ -1,4 +1,4 @@
-package scene.controllers;
+package fxml.controllers;
 
 import acquaintance.Person;
 import javafx.fxml.FXML;
@@ -8,7 +8,7 @@ public class ModalController {
     @FXML
     private Text modalText;
 
-    public void setAcquaintanceText(Person person, Person acquaintance){
+    public void setAcquaintanceText(Person person, Person acquaintance) {
         modalText.setText(person.getName() + " познакомился(ась) с " + acquaintance.getName());
     }
 }

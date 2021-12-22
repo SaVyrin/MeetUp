@@ -9,13 +9,7 @@ import java.net.Socket;
 
 public class Server {
 
-    // todo: should transfer socket, bufferedReader, bufferedWriter
-    //  into ServerMessageHandler like in ClientMessageHandler
-
-    private ServerSocket serverSocket;
-    private Socket socket;
-    private BufferedReader bufferedReader;
-    private BufferedWriter bufferedWriter;
+    private final ServerSocket serverSocket;
 
     private MessageHandler messageHandler;
 
@@ -34,43 +28,21 @@ public class Server {
     }
 
     private void start() {
-        System.out.println("Game server started");
+        System.out.println("Server started");
         while (true) {
             try {
-                this.socket = serverSocket.accept();
+                Socket socket = serverSocket.accept();
                 System.out.println("Client connected from: " + socket.getInetAddress());
 
-                bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-
-                messageHandler = new ServerMessageHandler(socket, bufferedReader, bufferedWriter);
+                messageHandler = new ServerMessageHandler(socket);
 
                 ServerMessageHandler serverMessageHandler = (ServerMessageHandler) messageHandler;
                 serverMessageHandler.sendMessage(serverMessageHandler.getChatMessages());
                 serverMessageHandler.receiveMessage(null);
             } catch (IOException e) {
                 e.printStackTrace();
-                System.out.println("Error creating server");
-                closeEverything(socket, bufferedReader, bufferedWriter);
+                System.out.println("Error creating connection");
             }
-        }
-
-    }
-
-    private void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
-        try {
-            System.out.println("disconnected");
-            if (socket != null) {
-                socket.close();
-            }
-            if (bufferedReader != null) {
-                bufferedReader.close();
-            }
-            if (bufferedWriter != null) {
-                bufferedWriter.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

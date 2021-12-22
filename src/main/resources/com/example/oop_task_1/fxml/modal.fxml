@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0"
+            prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="fxml.controllers.ModalController">
+   <Text fx:id="modalText" layoutX="15.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER"
+         wrappingWidth="270.6708984375"/>
+</AnchorPane>

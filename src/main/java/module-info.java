@@ -13,6 +13,6 @@ module com.example.oop_task_1 {
 
     opens com.example.oop_task_1 to javafx.fxml;
     exports com.example.oop_task_1;
-    exports scene.controllers;
-    opens scene.controllers to javafx.fxml;
+    exports fxml.controllers;
+    opens fxml.controllers to javafx.fxml;
 }

@@ -1,15 +1,15 @@
 package acquaintance.finders;
 
 import acquaintance.Person;
-import acquaintance.finders.Finder;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 public class CoupleFinder implements Finder {
-    List<Person> people;
-    Person person;
+
+    private final List<Person> people;
+    private final Person person;
 
     public CoupleFinder(List<Person> people, Person person) {
         this.people = people;

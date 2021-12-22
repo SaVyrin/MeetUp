@@ -18,15 +18,15 @@ public class AcquaintanceConsole {
     public Person acquaintance(String choice) {
         switch (choice) {
             case "couple" -> {
-                Finder friendFinder = new FriendFinder(people, newPerson);
-                List<Person> found = friendFinder.find();
+                Finder coupleFinder = new CoupleFinder(people, newPerson);
+                List<Person> found = coupleFinder.find();
                 if (!found.isEmpty()) {
                     return found.get(0);
                 }
             }
             case "friend" -> {
-                Finder coupleFinder = new CoupleFinder(people, newPerson);
-                List<Person> found = coupleFinder.find();
+                Finder friendFinder = new FriendFinder(people, newPerson);
+                List<Person> found = friendFinder.find();
                 if (!found.isEmpty()) {
                     return found.get(0);
                 }
