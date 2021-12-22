@@ -35,7 +35,7 @@ public class ClientMessageHandler implements MessageHandler {
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Error sending message to server");
-            closeEverything(socket, bufferedReader, bufferedWriter);
+            closeEverything();
         }
     }
 
@@ -54,14 +54,14 @@ public class ClientMessageHandler implements MessageHandler {
                 } catch (IOException e) {
                     e.printStackTrace();
                     System.out.println("Error receiving message from a server");
-                    closeEverything(socket, bufferedReader, bufferedWriter);
+                    closeEverything();
                     break;
                 }
             }
         }).start();
     }
 
-    private void closeEverything(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter) {
+    private void closeEverything() {
         try {
             if (socket != null) {
                 socket.close();

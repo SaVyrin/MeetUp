@@ -2,6 +2,7 @@ package fxml.controllers;
 
 import acquaintance.Person;
 import com.example.oop_task_1.Frame;
+import connections.DBConnection;
 import database.Database;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +13,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,44 +46,50 @@ public class RegisterController {
 
     @FXML
     private void onRegisterButtonClick() {
-        String login = inputLogin.getText();
-        String password = inputPassword.getText();
-        String surname = inputSurname.getText();
-        String name = inputName.getText();
-        int age = Integer.parseInt(inputAge.getText());
+        connections.Connection<Connection> connection = new DBConnection();
+        java.sql.Connection sqlConnection = connection.connect();
 
-        String sex = "";
-        RadioButton selectedSexRadio = (RadioButton) inputSex.getSelectedToggle();
-        if (selectedSexRadio.getText().equals("М")) {
-            sex = "male";
-        }
-        if (selectedSexRadio.getText().equals("Ж")) {
-            sex = "female";
-        }
+        Database registerDB = new Database(sqlConnection);
 
-        List<String> interests = new ArrayList<>();
-        List<Node> checkBoxes = inputInterests.getChildren();
-        for (Node node : checkBoxes) {
-            CheckBox checkBox = (CheckBox) node;
-            if (checkBox.isSelected()) {
-                interests.add(checkBox.getText());
+        if (sqlConnection != null) {
+            String login = inputLogin.getText();
+            String password = inputPassword.getText();
+            String surname = inputSurname.getText();
+            String name = inputName.getText();
+            int age = Integer.parseInt(inputAge.getText());
+
+            String sex = "";
+            RadioButton selectedSexRadio = (RadioButton) inputSex.getSelectedToggle();
+            if (selectedSexRadio.getText().equals("М")) {
+                sex = "male";
             }
+            if (selectedSexRadio.getText().equals("Ж")) {
+                sex = "female";
+            }
+
+            List<String> interests = new ArrayList<>();
+            List<Node> checkBoxes = inputInterests.getChildren();
+            for (Node node : checkBoxes) {
+                CheckBox checkBox = (CheckBox) node;
+                if (checkBox.isSelected()) {
+                    interests.add(checkBox.getText());
+                }
+            }
+
+            String city = inputCity.getText();
+
+            Person person = new Person(
+                    0,
+                    login,
+                    password,
+                    name,
+                    surname,
+                    age,
+                    sex,
+                    city,
+                    interests);
+
+            registerDB.insertPerson(person);
         }
-
-        String city = inputCity.getText();
-
-        Person person = new Person(
-                0,
-                login,
-                password,
-                name,
-                surname,
-                age,
-                sex,
-                city,
-                interests);
-
-        Database registerDB = new Database();
-        registerDB.insertPerson(person);
     }
 }

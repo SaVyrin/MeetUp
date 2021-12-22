@@ -1,6 +1,9 @@
 package fxml.controllers;
 
 import acquaintance.Person;
+import client.server.Client;
+import connections.Connection;
+import connections.ServerConnection;
 import com.example.oop_task_1.Frame;
 import fxml.controllers.scene.controller.PersonToShowChooser;
 import javafx.fxml.FXML;
@@ -102,7 +105,7 @@ public class SceneController {
     }
 
     @FXML
-    public void acquaintance() throws IOException {
+    private void acquaintance() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/modal.fxml"));
         Scene modalScene = new Scene(fxmlLoader.load(), 300, 200);
 
@@ -116,14 +119,19 @@ public class SceneController {
     }
 
     @FXML
-    public void openChat() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/chat.fxml"));
-        Scene secondScene = new Scene(fxmlLoader.load(), 800, 800);
+    private void openChat() throws IOException {
+        Connection<Client> connection = new ServerConnection();
+        Client client = connection.connect();
 
-        Stage currentStage = (Stage) acquaintanceButton.getScene().getWindow();
-        currentStage.setScene(secondScene);
+        if (client != null) {
+            FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/chat.fxml"));
+            Scene secondScene = new Scene(fxmlLoader.load(), 800, 800);
 
-        ChatController controller = fxmlLoader.getController();
-        controller.setLoggedInPerson(loggedInPerson);
+            Stage currentStage = (Stage) acquaintanceButton.getScene().getWindow();
+            currentStage.setScene(secondScene);
+
+            ChatController controller = fxmlLoader.getController();
+            controller.setLoggedInPerson(client, loggedInPerson);
+        }
     }
 }

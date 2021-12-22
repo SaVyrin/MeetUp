@@ -8,14 +8,17 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Database {
-    private static final String connectionString = "jdbc:mysql://localhost:3306/test";
-    private static final String dbLogin = "root";
-    private static final String dbPassword = "root";
+
+    private final Connection connection;
+
+    public Database(Connection connection) {
+        this.connection = connection;
+    }
 
     public List<Person> getPeopleFromDB() {
         String query = "SELECT * FROM meetup_test";
 
-        try (Connection connection = DriverManager.getConnection(connectionString, dbLogin, dbPassword);
+        try (connection;
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             ResultSet queryResult = preparedStatement.executeQuery();
@@ -46,8 +49,8 @@ public class Database {
     public Person getPersonFromDB(String personLogin, String personPassword) {
         String query = "SELECT * FROM meetup_test WHERE login = ? AND password = ?";
 
-        try (Connection connection = DriverManager.getConnection(connectionString, dbLogin, dbPassword);
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {    // getting Statement object to execute query
+        try (connection;
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, personLogin);
             preparedStatement.setString(2, personPassword);
@@ -85,7 +88,7 @@ public class Database {
                 "VALUES\n" +
                 "(?, ?, ?, ?, ?, ?, ?, ?);";
 
-        try (Connection connection = DriverManager.getConnection(connectionString, dbLogin, dbPassword);
+        try (connection;
              PreparedStatement preparedStatement = connection.prepareStatement(insertPerson)) {
 
             preparedStatement.setString(1, person.getLogin());

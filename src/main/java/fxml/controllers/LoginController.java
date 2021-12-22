@@ -2,6 +2,8 @@ package fxml.controllers;
 
 import acquaintance.Person;
 import com.example.oop_task_1.Frame;
+import connections.Connection;
+import connections.DBConnection;
 import database.Database;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,21 +23,29 @@ public class LoginController {
     private void onLoginButtonClick() throws IOException {
         String login = inputLogin.getText();
         String password = inputPassword.getText();
-        Database loginDB = new Database();
-        Person loggedInPerson = loginDB.getPersonFromDB(login, password);
 
-        FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/scene.fxml"));
-        Scene secondScene = new Scene(fxmlLoader.load(), 800, 800);
+        Connection<java.sql.Connection> connection = new DBConnection();
+        java.sql.Connection sqlConnection = connection.connect();
 
-        Stage currentStage = (Stage) inputLogin.getScene().getWindow();
-        currentStage.setScene(secondScene);
+        if (sqlConnection != null) {
+            Database loginDB = new Database(sqlConnection);
+            Person loggedInPerson = loginDB.getPersonFromDB(login, password);
 
-        SceneController controller = fxmlLoader.getController();
-        controller.setLoggedInPerson(loggedInPerson);
+            if (loggedInPerson != null) {
+                FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/scene.fxml"));
+                Scene secondScene = new Scene(fxmlLoader.load(), 800, 800);
+
+                Stage currentStage = (Stage) inputLogin.getScene().getWindow();
+                currentStage.setScene(secondScene);
+
+                SceneController controller = fxmlLoader.getController();
+                controller.setLoggedInPerson(loggedInPerson);
+            }
+        }
     }
 
     @FXML
-    public void onRegisterButtonClick() throws IOException {
+    private void onRegisterButtonClick() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/register.fxml"));
         Scene changeScene = new Scene(fxmlLoader.load(), 800, 800);
 

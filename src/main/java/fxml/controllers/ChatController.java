@@ -7,7 +7,6 @@ import com.example.oop_task_1.Frame;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
@@ -18,11 +17,8 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.Socket;
-import java.net.URL;
-import java.util.ResourceBundle;
 
-public class ChatController implements Initializable {
+public class ChatController {
     @FXML
     private TextArea chatArea;
     @FXML
@@ -30,25 +26,16 @@ public class ChatController implements Initializable {
     @FXML
     private ImageView avatar;
 
-    private Person loggedInPerson;
-
     private Client client;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        try {
-            client = new Client(new Socket("localhost", 9999));
-            System.out.println("Connected to server");
-        } catch (IOException e) {
-            System.out.println("Error connecting to server");
-        }
+    private Person loggedInPerson;
+
+    public void setLoggedInPerson(Client client, Person loggedInPerson) throws MalformedURLException {
+        this.client = client;
+        this.loggedInPerson = loggedInPerson;
 
         MessageHandler messageHandler = client.getMessageHandler();
         messageHandler.receiveMessage(chatArea);
-    }
-
-    public void setLoggedInPerson(Person loggedInPerson) throws MalformedURLException {
-        this.loggedInPerson = loggedInPerson;
 
         File fileLogo = new File(
                 "C:/Users/proto/IdeaProjects/OOP_Task_1/src/main/resources/com/example/oop_task_1/images/" +
@@ -74,14 +61,19 @@ public class ChatController implements Initializable {
     }
 
     @FXML
-    private void openAcquaintance() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/scene.fxml"));
-        Scene secondScene = new Scene(fxmlLoader.load(), 800, 800);
+    private void openAcquaintance() {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/scene.fxml"));
+            Scene secondScene = new Scene(fxmlLoader.load(), 800, 800);
 
-        Stage currentStage = (Stage) avatar.getScene().getWindow();
-        currentStage.setScene(secondScene);
+            Stage currentStage = (Stage) avatar.getScene().getWindow();
+            currentStage.setScene(secondScene);
 
-        SceneController controller = fxmlLoader.getController();
-        controller.setLoggedInPerson(loggedInPerson);
+            SceneController controller = fxmlLoader.getController();
+            controller.setLoggedInPerson(loggedInPerson);
+        } catch (IOException e){
+            e.printStackTrace();
+            System.out.println("Error changing");
+        }
     }
 }

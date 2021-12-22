@@ -1,5 +1,6 @@
 package client.server;
 
+import acquaintance.Person;
 import client.server.messages.ClientMessageHandler;
 import client.server.messages.MessageHandler;
 
@@ -10,10 +11,11 @@ public class Client {
     private final MessageHandler messageHandler;
 
     public Client(Socket socket) {
-        messageHandler = new ClientMessageHandler(socket);
+        this.messageHandler = new ClientMessageHandler(socket);
     }
 
     public MessageHandler getMessageHandler() {
         return messageHandler;
     }
+
 }
