@@ -1,7 +1,9 @@
 package connections;
 
+import exceptions.ConnectException;
+
 public interface Connection<E> {
 
-    E connect();
+    E connect() throws ConnectException;
 
 }

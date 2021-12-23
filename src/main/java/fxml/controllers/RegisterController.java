@@ -2,8 +2,12 @@ package fxml.controllers;
 
 import acquaintance.Person;
 import com.example.oop_task_1.Frame;
+import connections.Connection;
 import connections.DBConnection;
 import database.Database;
+import exceptions.ConnectException;
+import fxml.dialogs.ConnectErrorAlert;
+import fxml.dialogs.SuccessfulRegisterAlert;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -13,7 +17,6 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,12 +49,11 @@ public class RegisterController {
 
     @FXML
     private void onRegisterButtonClick() {
-        connections.Connection<Connection> connection = new DBConnection();
-        java.sql.Connection sqlConnection = connection.connect();
+        Connection<java.sql.Connection> connection = new DBConnection();
+        try {
+            java.sql.Connection sqlConnection = connection.connect();
+            Database registerDB = new Database(sqlConnection);
 
-        Database registerDB = new Database(sqlConnection);
-
-        if (sqlConnection != null) {
             String login = inputLogin.getText();
             String password = inputPassword.getText();
             String surname = inputSurname.getText();
@@ -90,6 +92,10 @@ public class RegisterController {
                     interests);
 
             registerDB.insertPerson(person);
+            new SuccessfulRegisterAlert();
+        } catch (ConnectException e) {
+            new ConnectErrorAlert(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

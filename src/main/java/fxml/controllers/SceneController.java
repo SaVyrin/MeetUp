@@ -5,7 +5,10 @@ import client.server.Client;
 import connections.Connection;
 import connections.ServerConnection;
 import com.example.oop_task_1.Frame;
+import exceptions.ConnectException;
 import fxml.controllers.scene.controller.PersonToShowChooser;
+import fxml.dialogs.AcquaintanceAlert;
+import fxml.dialogs.ConnectErrorAlert;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -105,25 +108,15 @@ public class SceneController {
     }
 
     @FXML
-    private void acquaintance() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/modal.fxml"));
-        Scene modalScene = new Scene(fxmlLoader.load(), 300, 200);
-
-        ModalController controller = fxmlLoader.getController();
-        controller.setAcquaintanceText(loggedInPerson, personToShow);
-
-        Stage stage = new Stage();
-        stage.setScene(modalScene);
-        stage.setTitle("My modal window");
-        stage.show();
+    private void acquaintance() {
+        new AcquaintanceAlert(loggedInPerson, personToShow);
     }
 
     @FXML
     private void openChat() throws IOException {
         Connection<Client> connection = new ServerConnection();
-        Client client = connection.connect();
-
-        if (client != null) {
+        try {
+            Client client = connection.connect();
             FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/chat.fxml"));
             Scene secondScene = new Scene(fxmlLoader.load(), 800, 800);
 
@@ -132,6 +125,9 @@ public class SceneController {
 
             ChatController controller = fxmlLoader.getController();
             controller.setLoggedInPerson(client, loggedInPerson);
+        } catch (ConnectException e) {
+            new ConnectErrorAlert(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

@@ -1,6 +1,5 @@
 package client.server;
 
-import acquaintance.Person;
 import client.server.messages.ClientMessageHandler;
 import client.server.messages.MessageHandler;
 

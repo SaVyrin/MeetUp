@@ -6,14 +6,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class CoupleFinder implements Finder {
-
-    private final List<Person> people;
-    private final Person person;
+public class CoupleFinder extends AbstractFinder {
 
     public CoupleFinder(List<Person> people, Person person) {
-        this.people = people;
-        this.person = person;
+        super(people, person);
     }
 
     @Override

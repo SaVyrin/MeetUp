@@ -36,9 +36,8 @@ public class Server {
 
                 messageHandler = new ServerMessageHandler(socket);
 
-                ServerMessageHandler serverMessageHandler = (ServerMessageHandler) messageHandler;
-                serverMessageHandler.sendMessage(serverMessageHandler.getChatMessages());
-                serverMessageHandler.receiveMessage(null);
+                messageHandler.sendMessage("");
+                messageHandler.receiveMessage(null);
             } catch (IOException e) {
                 e.printStackTrace();
                 System.out.println("Error creating connection");

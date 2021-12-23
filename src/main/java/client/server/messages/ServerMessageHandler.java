@@ -5,32 +5,18 @@ import javafx.scene.control.TextArea;
 import java.io.*;
 import java.net.Socket;
 
-public class ServerMessageHandler implements MessageHandler {
-
-    private final Socket socket;
-    private BufferedReader bufferedReader;
-    private BufferedWriter bufferedWriter;
+public class ServerMessageHandler extends AbstractMessageHandler {
 
     private String chatMessages = "";
 
-    public String getChatMessages() {
-        return chatMessages;
-    }
-
     public ServerMessageHandler(Socket socket) {
-        this.socket = socket;
-        try {
-            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        super(socket);
     }
 
     @Override
     public void sendMessage(String message) {
         try {
-            bufferedWriter.write(message);
+            bufferedWriter.write(chatMessages);
             bufferedWriter.newLine();
             bufferedWriter.flush();
 
@@ -61,22 +47,5 @@ public class ServerMessageHandler implements MessageHandler {
                 }
             }
         }).start();
-    }
-
-    private void closeEverything() {
-        try {
-            if (socket != null) {
-                socket.close();
-            }
-            if (bufferedReader != null) {
-                bufferedReader.close();
-            }
-            if (bufferedWriter != null) {
-                bufferedWriter.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Error closing everything");
-        }
     }
 }

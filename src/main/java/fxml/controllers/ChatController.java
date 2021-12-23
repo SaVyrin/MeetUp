@@ -39,8 +39,8 @@ public class ChatController {
 
         File fileLogo = new File(
                 "C:/Users/proto/IdeaProjects/OOP_Task_1/src/main/resources/com/example/oop_task_1/images/" +
-                loggedInPerson.getSex()
-                + "Ava.jpg");
+                        loggedInPerson.getSex()
+                        + "Ava.jpg");
         String localUrlLogo = fileLogo.toURI().toURL().toString();
         Image imageLogo = new Image(localUrlLogo);
         avatar.setImage(imageLogo);
@@ -61,19 +61,14 @@ public class ChatController {
     }
 
     @FXML
-    private void openAcquaintance() {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/scene.fxml"));
-            Scene secondScene = new Scene(fxmlLoader.load(), 800, 800);
+    private void openAcquaintance() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/scene.fxml"));
+        Scene secondScene = new Scene(fxmlLoader.load(), 800, 800);
 
-            Stage currentStage = (Stage) avatar.getScene().getWindow();
-            currentStage.setScene(secondScene);
+        Stage currentStage = (Stage) avatar.getScene().getWindow();
+        currentStage.setScene(secondScene);
 
-            SceneController controller = fxmlLoader.getController();
-            controller.setLoggedInPerson(loggedInPerson);
-        } catch (IOException e){
-            e.printStackTrace();
-            System.out.println("Error changing");
-        }
+        SceneController controller = fxmlLoader.getController();
+        controller.setLoggedInPerson(loggedInPerson);
     }
 }
