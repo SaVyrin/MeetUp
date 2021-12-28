@@ -1,8 +1,9 @@
 package client.server.messages;
 
 import fxml.controllers.SceneController;
-import javafx.collections.ObservableList;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -16,7 +17,6 @@ public class ClientMessageHandler extends AbstractMessageHandler {
         super(socket);
     }
 
-    @Override
     public void sendMessage(String message) {
         System.out.println("sent to server");
         System.out.println(message);
@@ -32,8 +32,7 @@ public class ClientMessageHandler extends AbstractMessageHandler {
         }
     }
 
-    @Override
-    public void receiveMessage(VBox vBoxOnline, VBox vBoxPending, VBox vBoxFriends) {
+    public void receiveMessage(VBox vBoxOnline, VBox vBoxPending, VBox vBoxFriends, ImageView avatar, Text description) {
         new Thread(() -> {
             while (socket.isConnected()) {
                 try {
@@ -54,6 +53,7 @@ public class ClientMessageHandler extends AbstractMessageHandler {
                         List<String> friends = new ArrayList<>(Arrays.asList(parsed).subList(1, parsed.length));
                         SceneController.addContentToVBox(friends, Command.FRIENDS.getCommandString(), vBoxFriends);
                     }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                     System.out.println("Error receiving message from a server");
@@ -62,25 +62,5 @@ public class ClientMessageHandler extends AbstractMessageHandler {
                 }
             }
         }).start();
-    }
-
-    @Override
-    public void setOnlinePeople(ObservableList<String> onlinePeople) {
-
-    }
-
-    @Override
-    public void setPendingFriendRequests(ObservableList<String> pendingFriendRequests) {
-
-    }
-
-    @Override
-    public void setFriends(ObservableList<String> friends) {
-
-    }
-
-    @Override
-    public void close() {
-        closeEverything();
     }
 }

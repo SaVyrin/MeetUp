@@ -3,7 +3,6 @@ package fxml.controllers;
 import acquaintance.Person;
 import client.server.Client;
 import client.server.messages.Command;
-import client.server.messages.MessageHandler;
 import com.example.oop_task_1.Frame;
 import fxml.controllers.scene.controller.PersonToShowChooser;
 import fxml.dialogs.AcquaintanceAlert;
@@ -53,9 +52,8 @@ public class SceneController {
         this.client = client;
         this.loggedInPerson = loggedInPerson;
 
-        MessageHandler messageHandler = client.getMessageHandler();
         sendMessage(Command.LOG_IN + Command.SEPARATOR + loggedInPerson.getLogin());
-        messageHandler.receiveMessage(onlinePeople, pendingRequests, friends);
+        client.receiveFromServer(onlinePeople, pendingRequests, friends, avatar, description);
         this.personToShowChooser = new PersonToShowChooser(loggedInPerson);
     }
 
@@ -131,7 +129,6 @@ public class SceneController {
     @FXML
     private void logOutButton() throws IOException {
         sendMessage(Command.LOG_OUT + Command.SEPARATOR + loggedInPerson.getLogin());
-        client.close();
 
         FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/login.fxml"));
         Scene changeScene = new Scene(fxmlLoader.load(), 800, 800);
@@ -142,8 +139,7 @@ public class SceneController {
 
     private void sendMessage(String message) {
         if (!message.isEmpty()) {
-            MessageHandler messageHandler = client.getMessageHandler();
-            messageHandler.sendMessage(message);
+            client.sendToServer(message);
         }
     }
 

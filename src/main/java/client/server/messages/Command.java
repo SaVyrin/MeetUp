@@ -5,7 +5,8 @@ public enum Command {
     LOG_OUT("LOG_OUT"),
     FRIEND_REQ("FRIEND_REQ"),
     ONLINE("ONLINE"),
-    FRIENDS("FRIENDS");
+    FRIENDS("FRIENDS"),
+    SHOW("SHOW");
 
     public static final String SEPARATOR = ":";
 

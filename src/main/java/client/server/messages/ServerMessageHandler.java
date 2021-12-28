@@ -3,7 +3,6 @@ package client.server.messages;
 import database.FriendsDatabase;
 import exceptions.DBConnectException;
 import javafx.collections.ObservableList;
-import javafx.scene.layout.VBox;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -19,7 +18,6 @@ public class ServerMessageHandler extends AbstractMessageHandler {
         super(socket);
     }
 
-    @Override
     public void sendMessage(String message) {
         String messageToClient = "";
         switch (message) {
@@ -40,8 +38,7 @@ public class ServerMessageHandler extends AbstractMessageHandler {
         }
     }
 
-    @Override
-    public void receiveMessage(VBox vBox1, VBox vBox2, VBox vBox3) {
+    public void receiveMessage() {
         new Thread(() -> {
             main:
             while (socket.isConnected()) {
@@ -60,14 +57,17 @@ public class ServerMessageHandler extends AbstractMessageHandler {
                     if (parsed[0].equals(Command.LOG_OUT.getCommandString())) {
                         onlinePeople.remove(parsed[1]);
                         loggedInPerson = null;
+                        closeEverything();
                     }
                     if (parsed[0].equals(Command.FRIEND_REQ.getCommandString())) {
                         // Check if accept request
-                        String pendingTo = parsed[1].split("-")[1];
+                        String parsedFrom = parsed[1].split("-")[0];
+                        String parsedTo = parsed[1].split("-")[1];
                         for (String pending : pendingFriendRequests) {
                             String pendingFrom = pending.split("-")[0];
+                            String pendingTo = pending.split("-")[1];
 
-                            if (pendingFrom.equals(pendingTo)) {
+                            if (parsedTo.equals(pendingFrom) && parsedFrom.equals(pendingTo)) {
                                 friends.add(pending);
                                 pendingFriendRequests.remove(pending);
 
@@ -103,19 +103,16 @@ public class ServerMessageHandler extends AbstractMessageHandler {
         }).start();
     }
 
-    @Override
     public void setOnlinePeople(ObservableList<String> onlinePeople) {
         this.onlinePeople = onlinePeople;
         sendMessage("online");
     }
 
-    @Override
     public void setPendingFriendRequests(ObservableList<String> pendingFriendRequests) {
         this.pendingFriendRequests = pendingFriendRequests;
         sendMessage("pending");
     }
 
-    @Override
     public void setFriends(ObservableList<String> friends) {
         this.friends = friends;
         sendMessage("friends");
@@ -130,6 +127,7 @@ public class ServerMessageHandler extends AbstractMessageHandler {
             if (count != onlinePeople.size() - 1) {
                 messageToClientBuilder.append(Command.SEPARATOR);
             }
+            count++;
         }
         return messageToClientBuilder.toString();
     }
@@ -161,21 +159,21 @@ public class ServerMessageHandler extends AbstractMessageHandler {
             String[] friendsStringSplitted = friendsString.split("-");
             String friend1 = friendsStringSplitted[0];
             String friend2 = friendsStringSplitted[1];
+
             if (friend1.equals(loggedInPerson)) {
                 messageToClientBuilder.append(friend2);
+                if (count != friends.size() - 1) {
+                    messageToClientBuilder.append(Command.SEPARATOR);
+                }
             }
             if (friend2.equals(loggedInPerson)) {
                 messageToClientBuilder.append(friend1);
+                if (count != friends.size() - 1) {
+                    messageToClientBuilder.append(Command.SEPARATOR);
+                }
             }
-            if (count != friends.size() - 1) {
-                messageToClientBuilder.append(Command.SEPARATOR);
-            }
+            count++;
         }
         return messageToClientBuilder.toString();
-    }
-
-    @Override
-    public void close() {
-        closeEverything();
     }
 }

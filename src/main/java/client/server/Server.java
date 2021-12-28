@@ -1,6 +1,5 @@
 package client.server;
 
-import client.server.messages.MessageHandler;
 import client.server.messages.ServerMessageHandler;
 import database.FriendsDatabase;
 import exceptions.DBConnectException;
@@ -21,7 +20,7 @@ public class Server {
     private final ObservableList<String> pendingFriendRequests = FXCollections.observableArrayList();
     private final ObservableList<String> onlinePeople = FXCollections.observableArrayList();
     private final ObservableList<String> friends = FXCollections.observableArrayList();
-    private final List<MessageHandler> messageHandlers = new ArrayList<>();
+    private final List<ServerMessageHandler> messageHandlers = new ArrayList<>();
 
     public static void main(String[] args) {
         try {
@@ -65,10 +64,10 @@ public class Server {
                 Socket socket = serverSocket.accept();
                 System.out.println("Client connected from: " + socket.getInetAddress());
 
-                MessageHandler messageHandler = new ServerMessageHandler(socket);
+                ServerMessageHandler messageHandler = new ServerMessageHandler(socket);
                 messageHandlers.add(messageHandler);
 
-                messageHandler.receiveMessage(null, null, null);
+                messageHandler.receiveMessage();
                 messageHandler.setOnlinePeople(onlinePeople);
                 messageHandler.setPendingFriendRequests(pendingFriendRequests);
                 messageHandler.setFriends(friends);
@@ -80,19 +79,19 @@ public class Server {
     }
 
     private void setOnlinePeopleToMessageHandlers() {
-        for (MessageHandler messageHandler : messageHandlers) {
+        for (ServerMessageHandler messageHandler : messageHandlers) {
             messageHandler.setOnlinePeople(onlinePeople);
         }
     }
 
     private void setPendingFriendRequestsToMessageHandlers() {
-        for (MessageHandler messageHandler : messageHandlers) {
+        for (ServerMessageHandler messageHandler : messageHandlers) {
             messageHandler.setPendingFriendRequests(pendingFriendRequests);
         }
     }
 
     private void setFriendsToMessageHandlers() {
-        for (MessageHandler messageHandler : messageHandlers) {
+        for (ServerMessageHandler messageHandler : messageHandlers) {
             messageHandler.setFriends(friends);
         }
     }

@@ -3,17 +3,25 @@ package client.server.messages;
 import java.io.*;
 import java.net.Socket;
 
-public abstract class AbstractMessageHandler implements MessageHandler {
+public abstract class AbstractMessageHandler {
 
     public final Socket socket;
     public BufferedReader bufferedReader;
+    public ObjectInputStream objectInputStream;
     public BufferedWriter bufferedWriter;
+    public ObjectOutputStream objectOutputStream;
 
     public AbstractMessageHandler(Socket socket) {
         this.socket = socket;
         try {
-            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            InputStream inputStream = socket.getInputStream();
+            OutputStream outputStream = socket.getOutputStream();
+
+            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
+            this.bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+            this.objectOutputStream = new ObjectOutputStream(outputStream);
+            this.objectInputStream = new ObjectInputStream(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Error creating MessageHandler");
@@ -37,7 +45,6 @@ public abstract class AbstractMessageHandler implements MessageHandler {
         }
     }
 
-    @Override
     public boolean isConnected(){
         return socket.isConnected();
     }
