@@ -17,4 +17,7 @@ public class Client {
         return messageHandler;
     }
 
+    public void close(){
+        messageHandler.close();
+    }
 }

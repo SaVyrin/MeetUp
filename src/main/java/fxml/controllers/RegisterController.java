@@ -2,9 +2,7 @@ package fxml.controllers;
 
 import acquaintance.Person;
 import com.example.oop_task_1.Frame;
-import connections.Connection;
-import connections.DBConnection;
-import database.Database;
+import database.PeopleDatabase;
 import exceptions.ConnectException;
 import fxml.dialogs.ConnectErrorAlert;
 import fxml.dialogs.SuccessfulRegisterAlert;
@@ -12,7 +10,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -49,10 +50,8 @@ public class RegisterController {
 
     @FXML
     private void onRegisterButtonClick() {
-        Connection<java.sql.Connection> connection = new DBConnection();
         try {
-            java.sql.Connection sqlConnection = connection.connect();
-            Database registerDB = new Database(sqlConnection);
+            PeopleDatabase registerDB = new PeopleDatabase();
 
             String login = inputLogin.getText();
             String password = inputPassword.getText();

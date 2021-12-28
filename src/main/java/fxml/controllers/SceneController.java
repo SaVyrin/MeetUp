@@ -2,19 +2,20 @@ package fxml.controllers;
 
 import acquaintance.Person;
 import client.server.Client;
-import connections.Connection;
-import connections.ServerConnection;
+import client.server.messages.Command;
+import client.server.messages.MessageHandler;
 import com.example.oop_task_1.Frame;
-import exceptions.ConnectException;
 import fxml.controllers.scene.controller.PersonToShowChooser;
 import fxml.dialogs.AcquaintanceAlert;
-import fxml.dialogs.ConnectErrorAlert;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -25,6 +26,12 @@ import java.util.List;
 
 
 public class SceneController {
+    @FXML
+    private VBox friends;
+    @FXML
+    private VBox pendingRequests;
+    @FXML
+    private VBox onlinePeople;
     @FXML
     private Button leftPersonChangeButton;
     @FXML
@@ -39,10 +46,16 @@ public class SceneController {
     private Person loggedInPerson;
     private Person personToShow;
 
-    PersonToShowChooser personToShowChooser;
+    private Client client;
+    private PersonToShowChooser personToShowChooser;
 
-    public void setLoggedInPerson(Person loggedInPerson) {
+    public void setLoggedInPerson(Client client, Person loggedInPerson) {
+        this.client = client;
         this.loggedInPerson = loggedInPerson;
+
+        MessageHandler messageHandler = client.getMessageHandler();
+        sendMessage(Command.LOG_IN + Command.SEPARATOR + loggedInPerson.getLogin());
+        messageHandler.receiveMessage(onlinePeople, pendingRequests, friends);
         this.personToShowChooser = new PersonToShowChooser(loggedInPerson);
     }
 
@@ -77,6 +90,7 @@ public class SceneController {
     }
 
     private void showNextPerson() throws MalformedURLException {
+        String login = personToShow.getLogin();
         String name = personToShow.getName();
         String surname = personToShow.getSurname();
         int age = personToShow.getAge();
@@ -89,6 +103,7 @@ public class SceneController {
         avatar.setImage(imageLogo);
 
         StringBuilder descriptionText = new StringBuilder();
+        descriptionText.append("@"+login+"\n");
         descriptionText.append(name + " " + surname + "\n");
         descriptionText.append("Возраст: " + age + "\n");
         descriptionText.append("Город: " + city + "\n");
@@ -109,25 +124,37 @@ public class SceneController {
 
     @FXML
     private void acquaintance() {
+        sendMessage(Command.FRIEND_REQ + Command.SEPARATOR + loggedInPerson.getLogin() + "-" + personToShow.getLogin());
         new AcquaintanceAlert(loggedInPerson, personToShow);
     }
 
     @FXML
-    private void openChat() throws IOException {
-        Connection<Client> connection = new ServerConnection();
-        try {
-            Client client = connection.connect();
-            FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/chat.fxml"));
-            Scene secondScene = new Scene(fxmlLoader.load(), 800, 800);
+    private void logOutButton() throws IOException {
+        sendMessage(Command.LOG_OUT + Command.SEPARATOR + loggedInPerson.getLogin());
+        client.close();
 
-            Stage currentStage = (Stage) acquaintanceButton.getScene().getWindow();
-            currentStage.setScene(secondScene);
+        FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/login.fxml"));
+        Scene changeScene = new Scene(fxmlLoader.load(), 800, 800);
 
-            ChatController controller = fxmlLoader.getController();
-            controller.setLoggedInPerson(client, loggedInPerson);
-        } catch (ConnectException e) {
-            new ConnectErrorAlert(e.getMessage());
-            e.printStackTrace();
+        Stage currentStage = (Stage) onlinePeople.getScene().getWindow();
+        currentStage.setScene(changeScene);
+    }
+
+    private void sendMessage(String message) {
+        if (!message.isEmpty()) {
+            MessageHandler messageHandler = client.getMessageHandler();
+            messageHandler.sendMessage(message);
         }
+    }
+
+    public static void addContentToVBox(List<String> message, String type, VBox vBox) {
+        Platform.runLater(() -> {
+            vBox.getChildren().clear();
+            for (String str : message) {
+                Label label = new Label(type + str);
+                label.setStyle("-fx-background-color : #99ff99;");
+                vBox.getChildren().add(label);
+            }
+        });
     }
 }

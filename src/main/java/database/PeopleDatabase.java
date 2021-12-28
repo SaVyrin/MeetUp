@@ -1,24 +1,26 @@
 package database;
 
 import acquaintance.Person;
+import exceptions.DBConnectException;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Database {
+public class PeopleDatabase {
 
-    private final Connection connection;
+    private static final String connectionString = "jdbc:mysql://localhost:3306/test";
+    private static final String dbLogin = "root";
+    private static final String dbPassword = "root";
 
-    public Database(Connection connection) {
-        this.connection = connection;
+    public PeopleDatabase() {
     }
 
-    public List<Person> getPeopleFromDB() {
+    public List<Person> getPeopleFromDB() throws DBConnectException {
         String query = "SELECT * FROM meetup_test";
 
-        try (connection;
+        try (Connection connection = DriverManager.getConnection(connectionString, dbLogin, dbPassword);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             ResultSet queryResult = preparedStatement.executeQuery();
@@ -42,20 +44,20 @@ public class Database {
 
         } catch (SQLException sqlEx) {
             sqlEx.printStackTrace();
+            throw new DBConnectException("Error connecting to DB");
         }
-        return null;
     }
 
-    public Person getPersonFromDB(String personLogin, String personPassword) {
+    public Person getPersonFromDB(String personLogin, String personPassword) throws DBConnectException {
         String query = "SELECT * FROM meetup_test WHERE login = ? AND password = ?";
 
-        try (connection;
+        try (Connection connection = DriverManager.getConnection(connectionString, dbLogin, dbPassword);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setString(1, personLogin);
             preparedStatement.setString(2, personPassword);
 
-            ResultSet queryResult = preparedStatement.executeQuery(); // executing SELECT query
+            ResultSet queryResult = preparedStatement.executeQuery();
 
             List<Person> personList = new ArrayList<>();
             while (queryResult.next()) {
@@ -77,18 +79,18 @@ public class Database {
 
         } catch (SQLException sqlEx) {
             sqlEx.printStackTrace();
+            throw new DBConnectException("Error connecting to DB");
         }
-        return null;
     }
 
-    public void insertPerson(Person person) {
+    public void insertPerson(Person person) throws DBConnectException {
 
         String insertPerson = "INSERT INTO meetup_test\n" +
                 "(login, password, name, surname, age, sex, city, interests)\n" +
                 "VALUES\n" +
                 "(?, ?, ?, ?, ?, ?, ?, ?);";
 
-        try (connection;
+        try (Connection connection = DriverManager.getConnection(connectionString, dbLogin, dbPassword);
              PreparedStatement preparedStatement = connection.prepareStatement(insertPerson)) {
 
             preparedStatement.setString(1, person.getLogin());
@@ -103,6 +105,7 @@ public class Database {
             preparedStatement.executeUpdate();
         } catch (SQLException sqlEx) {
             sqlEx.printStackTrace();
+            throw new DBConnectException("Error connecting to DB");
         }
     }
 

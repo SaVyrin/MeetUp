@@ -36,4 +36,9 @@ public abstract class AbstractMessageHandler implements MessageHandler {
             System.out.println("Error closing everything");
         }
     }
+
+    @Override
+    public boolean isConnected(){
+        return socket.isConnected();
+    }
 }

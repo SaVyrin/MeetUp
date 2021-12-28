@@ -1,58 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<TitledPane animated="false" collapsible="false" ellipsisString="" maxHeight="-Infinity" maxWidth="-Infinity"
-            minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="647.0" text="MeetUP"
-            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="fxml.controllers.SceneController">
-    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-        <BorderPane layoutX="-1.0" prefHeight="371.0" prefWidth="600.0">
-            <top>
-                <AnchorPane prefHeight="48.0" prefWidth="654.0" BorderPane.alignment="CENTER">
-                    <Button layoutY="-1.0" mnemonicParsing="false" onAction="#openChat" text="Перейти к чату"/>
-                </AnchorPane>
-            </top>
-            <center>
-                <AnchorPane prefHeight="277.0" prefWidth="200.0"
-                            style="-fx-border-width: 2; -fx-border-style: solid;" BorderPane.alignment="CENTER">
-                    <ImageView fx:id="avatar" fitHeight="200.0" fitWidth="250.0" layoutX="2.0" layoutY="9.0"
-                               pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="9.0"
-                               AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0"
-                               AnchorPane.topAnchor="9.0"/>
-                </AnchorPane>
-            </center>
-            <bottom>
-                <AnchorPane prefHeight="105.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-                    <Text fx:id="description" layoutX="200.0" layoutY="58.0" strokeType="OUTSIDE"
-                          strokeWidth="0.0" text="Выберите нужный вариант" textAlignment="CENTER"
-                          wrappingWidth="250.6708984375"/>
-                    <Button layoutX="167.0" layoutY="-1.0" mnemonicParsing="false" onAction="#findCouple"
-                            text="Найти пару"/>
-                    <Button layoutX="393.0" layoutY="-1.0" mnemonicParsing="false" onAction="#findFriend"
-                            text="Найти друга"/>
-                    <Button fx:id="acquaintanceButton" layoutX="266.0" layoutY="-1.0" mnemonicParsing="false"
-                            onAction="#acquaintance" text="Познакомиться" visible="false"/>
-                </AnchorPane>
-            </bottom>
-            <right>
-                <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: rgb(211, 211, 211);"
-                            BorderPane.alignment="CENTER">
-                    <Button fx:id="rightPersonChangeButton" layoutX="80.0" layoutY="80.0" mnemonicParsing="false"
-                            onAction="#rightPersonToShowChange" text="&gt;" textAlignment="CENTER"
-                            visible="false"/>
-                </AnchorPane>
-            </right>
-            <left>
-                <AnchorPane prefHeight="212.0" prefWidth="200.0" style="-fx-background-color: rgb(211,211,211);"
-                            BorderPane.alignment="CENTER">
-                    <Button fx:id="leftPersonChangeButton" layoutX="80.0" layoutY="80.0" mnemonicParsing="false"
-                            onAction="#leftPersonToShowChange" text="&lt;" textAlignment="CENTER"
-                            visible="false"/>
-                </AnchorPane>
-            </left>
-        </BorderPane>
-    </AnchorPane>
+
+<TitledPane animated="false" collapsible="false" ellipsisString="" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="647.0" text="MeetUP" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxml.controllers.SceneController">
+   <content>
+       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+          <children>
+              <BorderPane layoutX="-1.0" prefHeight="371.0" prefWidth="600.0">
+                  <top>
+                      <AnchorPane prefHeight="48.0" prefWidth="654.0" BorderPane.alignment="CENTER">
+                     <children>
+                        <Button layoutX="579.0" layoutY="9.0" mnemonicParsing="false" onAction="#logOutButton" text="Выйти" />
+                     </children></AnchorPane>
+                  </top>
+                  <center>
+                      <AnchorPane prefHeight="277.0" prefWidth="200.0" style="-fx-border-width: 2; -fx-border-style: solid;" BorderPane.alignment="CENTER">
+                         <children>
+                             <ImageView fx:id="avatar" fitHeight="200.0" fitWidth="250.0" layoutX="2.0" layoutY="9.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="9.0" />
+                         </children>
+                      </AnchorPane>
+                  </center>
+                  <bottom>
+                      <AnchorPane prefHeight="105.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+                         <children>
+                             <Text fx:id="description" layoutX="138.0" layoutY="58.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Выберите нужный вариант" textAlignment="CENTER" wrappingWidth="250.6708984375" />
+                             <Button layoutX="101.0" layoutY="-1.0" mnemonicParsing="false" onAction="#findCouple" text="Найти пару" />
+                             <Button layoutX="327.0" layoutY="-1.0" mnemonicParsing="false" onAction="#findFriend" text="Найти друга" />
+                             <Button fx:id="acquaintanceButton" layoutX="200.0" layoutY="-1.0" mnemonicParsing="false" onAction="#acquaintance" text="Познакомиться" visible="false" />
+                        <ScrollPane layoutX="488.0" layoutY="4.0" prefHeight="97.0" prefWidth="155.0">
+                           <content>
+                              <VBox fx:id="friends" prefHeight="91.0" prefWidth="150.0" />
+                           </content>
+                        </ScrollPane>
+                         </children>
+                      </AnchorPane>
+                  </bottom>
+                  <right>
+                      <AnchorPane prefHeight="222.0" prefWidth="248.0" style="-fx-background-color: rgb(211, 211, 211);" BorderPane.alignment="CENTER">
+                         <children>
+                             <Button fx:id="rightPersonChangeButton" layoutX="26.0" layoutY="96.0" mnemonicParsing="false" onAction="#rightPersonToShowChange" text="&gt;" textAlignment="CENTER" visible="false" />
+                        <ScrollPane layoutX="93.0" prefHeight="90.0" prefWidth="155.0">
+                           <content>
+                              <VBox fx:id="onlinePeople" prefHeight="86.0" prefWidth="151.0" />
+                           </content>
+                        </ScrollPane>
+                        <ScrollPane layoutX="94.0" layoutY="90.0" prefHeight="97.0" prefWidth="154.0">
+                           <content>
+                              <VBox fx:id="pendingRequests" prefHeight="93.0" prefWidth="149.0" />
+                           </content>
+                        </ScrollPane>
+                         </children>
+                      </AnchorPane>
+                  </right>
+                  <left>
+                      <AnchorPane prefHeight="222.0" prefWidth="137.0" style="-fx-background-color: rgb(211,211,211);" BorderPane.alignment="CENTER">
+                         <children>
+                             <Button fx:id="leftPersonChangeButton" layoutX="80.0" layoutY="80.0" mnemonicParsing="false" onAction="#leftPersonToShowChange" text="&lt;" textAlignment="CENTER" visible="false" />
+                         </children>
+                      </AnchorPane>
+                  </left>
+              </BorderPane>
+          </children>
+       </AnchorPane>
+   </content>
 </TitledPane>
