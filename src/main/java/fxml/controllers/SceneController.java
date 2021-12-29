@@ -35,15 +35,11 @@ public class SceneController {
     @FXML
     private ImageView avatar;
 
-    private Person loggedInPerson;
-
     private Client client;
 
-    public void setLoggedInPerson(Client client, Person loggedInPerson) {
+    public void setClient(Client client) {
         this.client = client;
-        this.loggedInPerson = loggedInPerson;
-
-        sendMessage(Command.LOG_IN, loggedInPerson.getLogin());
+        sendMessage(Command.LOG_IN, "");
         client.receiveFromServer(onlinePeople, pendingRequests, friends, avatar, description);
     }
 
@@ -81,7 +77,7 @@ public class SceneController {
 
     @FXML
     private void logOutButton() throws IOException {
-        sendMessage(Command.LOG_OUT, loggedInPerson.getLogin());
+        sendMessage(Command.LOG_OUT, "");
 
         FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/login.fxml"));
         Scene changeScene = new Scene(fxmlLoader.load(), 800, 800);
@@ -91,6 +87,6 @@ public class SceneController {
     }
 
     private void sendMessage(Command command, String message) {
-        client.sendToServer(message, loggedInPerson, command);
+        client.sendToServer(message, command);
     }
 }

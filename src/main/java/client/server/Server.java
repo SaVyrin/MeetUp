@@ -1,5 +1,6 @@
 package client.server;
 
+import client.server.messages.Command;
 import client.server.messages.ServerMessageHandler;
 import database.FriendsDatabase;
 import exceptions.DBConnectException;
@@ -44,7 +45,7 @@ public class Server {
         for (List<String> twoFriends : friendsListFromDB) {
             String firstFriend = twoFriends.get(0);
             String secondFriend = twoFriends.get(1);
-            friends.add(firstFriend + "-" + secondFriend);
+            friends.add(firstFriend + Command.SEPARATOR + secondFriend);
         }
 
         onlinePeople.addListener((ListChangeListener<String>) change -> {

@@ -57,14 +57,14 @@ public class ServerMessageHandler extends AbstractMessageHandler {
                     String message = messageFromClient.getMessage();
 
                     if (command.equals(Command.LOG_IN)) {
-                        this.loggedInPerson = messageFromClient.getLoggedInPerson();
+                        this.loggedInPerson = loggedInPerson;
                         this.personToShowChooser = new PersonToShowChooser(loggedInPerson);
                         onlinePeople.add(loggedInPerson.getLogin());
                         sendMessage("pending");
                         sendMessage("friends");
                     }
                     if (command.equals(Command.LOG_OUT)) {
-                        onlinePeople.remove(loggedInPerson.getLogin());
+                        onlinePeople.remove(this.loggedInPerson.getLogin());
                         this.loggedInPerson = null;
                         closeEverything();
                     }
@@ -73,17 +73,17 @@ public class ServerMessageHandler extends AbstractMessageHandler {
                         String pendFrom = loggedInPerson.getLogin();
                         String pendTo = personToShowChooser.getCurrShownPerson().getLogin();
 
-                        String pend = pendFrom + "-" + pendTo;
+                        String pend = pendFrom + Command.SEPARATOR + pendTo;
                         for (String pending : pendingFriendRequests) {
-                            String pendingFrom = pending.split("-")[0];
-                            String pendingTo = pending.split("-")[1];
+                            String pendingFrom = pending.split(Command.SEPARATOR)[0];
+                            String pendingTo = pending.split(Command.SEPARATOR)[1];
 
                             if (pendTo.equals(pendingFrom) && pendFrom.equals(pendingTo)) {
                                 friends.add(pending);
                                 pendingFriendRequests.remove(pending);
 
                                 FriendsDatabase friendsDatabase = new FriendsDatabase();
-                                String[] friendsToInsert = pending.split("-");
+                                String[] friendsToInsert = pending.split(Command.SEPARATOR);
                                 String firstFriendToInsert = friendsToInsert[0];
                                 String secondFriendToInsert = friendsToInsert[1];
                                 friendsDatabase.insertTwoFriends(firstFriendToInsert, secondFriendToInsert);
@@ -92,7 +92,7 @@ public class ServerMessageHandler extends AbstractMessageHandler {
                         }
 
                         // Add to pending if nothing to accept
-                        String alternativeParsed = pendTo + "-" + pendFrom;
+                        String alternativeParsed = pendTo + Command.SEPARATOR + pendFrom;
                         if (!pendingFriendRequests.contains(pend)
                                 && !friends.contains(pend)
                                 && !friends.contains(alternativeParsed)) {
@@ -162,7 +162,7 @@ public class ServerMessageHandler extends AbstractMessageHandler {
 
         List<String> pendingToSend = new ArrayList<>();
         for (String pendingString : pendingFriendRequests) {
-            String[] pending = pendingString.split("-");
+            String[] pending = pendingString.split(Command.SEPARATOR);
             String pendingFrom = pending[0];
             String pendingTo = pending[1];
             if (pendingTo.equals(loggedInPerson.getLogin())) {
@@ -177,7 +177,7 @@ public class ServerMessageHandler extends AbstractMessageHandler {
 
         List<String> friendsToSend = new ArrayList<>();
         for (String friendsString : friends) {
-            String[] friendsStringSplitted = friendsString.split("-");
+            String[] friendsStringSplitted = friendsString.split(Command.SEPARATOR);
             String friend1 = friendsStringSplitted[0];
             String friend2 = friendsStringSplitted[1];
 

@@ -27,10 +27,10 @@ public class LoginController {
         String login = inputLogin.getText();
         String password = inputPassword.getText();
 
-        Connection<Client> serverConnection = new ServerConnection();
         try {
             PeopleDatabase loginDB = new PeopleDatabase();
             Person loggedInPerson = loginDB.getPersonFromDB(login, password);
+            Connection<Client> serverConnection = new ServerConnection(loggedInPerson);
 
             Client client = serverConnection.connect();
 
@@ -41,7 +41,7 @@ public class LoginController {
             currentStage.setScene(secondScene);
 
             SceneController controller = fxmlLoader.getController();
-            controller.setLoggedInPerson(client, loggedInPerson);
+            controller.setClient(client);
         } catch (ConnectException e) {
             new ConnectErrorAlert(e.getMessage());
         }

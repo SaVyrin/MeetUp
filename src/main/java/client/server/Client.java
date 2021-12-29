@@ -13,12 +13,14 @@ import java.net.Socket;
 public class Client {
 
     private final ClientMessageHandler messageHandler;
+    private final Person loggedInPerson;
 
-    public Client(Socket socket) {
+    public Client(Socket socket, Person loggedInPerson) {
         this.messageHandler = new ClientMessageHandler(socket);
+        this.loggedInPerson = loggedInPerson;
     }
 
-    public void sendToServer(String message, Person loggedInPerson, Command command) {
+    public void sendToServer(String message, Command command) {
         Message messageToServer = new Message(loggedInPerson);
         messageToServer.setCommand(command);
         messageToServer.setMessage(message);
