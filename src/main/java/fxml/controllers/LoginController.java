@@ -1,11 +1,10 @@
 package fxml.controllers;
 
-import acquaintance.Person;
 import client.server.Client;
+import client.server.messages.Command;
 import com.example.oop_task_1.Frame;
 import connections.Connection;
 import connections.ServerConnection;
-import database.PeopleDatabase;
 import exceptions.ConnectException;
 import fxml.dialogs.ConnectErrorAlert;
 import javafx.fxml.FXML;
@@ -28,11 +27,10 @@ public class LoginController {
         String password = inputPassword.getText();
 
         try {
-            PeopleDatabase loginDB = new PeopleDatabase();
-            Person loggedInPerson = loginDB.getPersonFromDB(login, password);
-            Connection<Client> serverConnection = new ServerConnection(loggedInPerson);
+            Connection<Client> serverConnection = new ServerConnection();
 
             Client client = serverConnection.connect();
+            client.sendToServer(Command.LOG_IN, login + Command.SEPARATOR + password);
 
             FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/scene.fxml"));
             Scene secondScene = new Scene(fxmlLoader.load(), 800, 800);

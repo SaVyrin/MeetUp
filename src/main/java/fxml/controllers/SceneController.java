@@ -1,6 +1,5 @@
 package fxml.controllers;
 
-import acquaintance.Person;
 import client.server.Client;
 import client.server.messages.Command;
 import com.example.oop_task_1.Frame;
@@ -39,7 +38,6 @@ public class SceneController {
 
     public void setClient(Client client) {
         this.client = client;
-        sendMessage(Command.LOG_IN, "");
         client.receiveFromServer(onlinePeople, pendingRequests, friends, avatar, description);
     }
 
@@ -87,6 +85,6 @@ public class SceneController {
     }
 
     private void sendMessage(Command command, String message) {
-        client.sendToServer(message, command);
+        client.sendToServer(command, message);
     }
 }

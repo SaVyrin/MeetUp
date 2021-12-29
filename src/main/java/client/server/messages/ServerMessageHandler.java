@@ -2,6 +2,7 @@ package client.server.messages;
 
 import acquaintance.Person;
 import database.FriendsDatabase;
+import database.PeopleDatabase;
 import exceptions.DBConnectException;
 import client.server.PersonToShowChooser;
 import javafx.collections.ObservableList;
@@ -27,6 +28,7 @@ public class ServerMessageHandler extends AbstractMessageHandler {
     public void sendMessage(String message) {
         Message messageToClient = new Message(loggedInPerson);
         switch (message) {
+            case "login" -> onlinePersonMessage(messageToClient);
             case "online" -> onlinePeopleMessage(messageToClient);
             case "pending" -> pendingFriendRequestsMessage(messageToClient);
             case "friends" -> friendsMessage(messageToClient);
@@ -57,9 +59,14 @@ public class ServerMessageHandler extends AbstractMessageHandler {
                     String message = messageFromClient.getMessage();
 
                     if (command.equals(Command.LOG_IN)) {
-                        this.loggedInPerson = loggedInPerson;
-                        this.personToShowChooser = new PersonToShowChooser(loggedInPerson);
-                        onlinePeople.add(loggedInPerson.getLogin());
+                        String login = message.split(Command.SEPARATOR)[0];
+                        String password = message.split(Command.SEPARATOR)[1];
+                        PeopleDatabase peopleDatabase = new PeopleDatabase();
+
+                        this.loggedInPerson = peopleDatabase.getPersonFromDB(login, password);
+                        this.personToShowChooser = new PersonToShowChooser(this.loggedInPerson);
+                        onlinePeople.add(this.loggedInPerson.getLogin());
+                        sendMessage("login");
                         sendMessage("pending");
                         sendMessage("friends");
                     }
@@ -149,6 +156,10 @@ public class ServerMessageHandler extends AbstractMessageHandler {
     public void noticeFriends(ObservableList<String> friends) {
         setFriends(friends);
         sendMessage("friends");
+    }
+
+    private void onlinePersonMessage(Message messageToClient) {
+        messageToClient.setCommand(Command.LOG_IN);
     }
 
     private void onlinePeopleMessage(Message messageToClient) {

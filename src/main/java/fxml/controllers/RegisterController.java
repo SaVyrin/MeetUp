@@ -50,48 +50,48 @@ public class RegisterController {
 
     @FXML
     private void onRegisterButtonClick() {
+        String login = inputLogin.getText();
+        String password = inputPassword.getText();
+        String surname = inputSurname.getText();
+        String name = inputName.getText();
+        int age = Integer.parseInt(inputAge.getText());
+
+        String sex = "";
+        RadioButton selectedSexRadio = (RadioButton) inputSex.getSelectedToggle();
+        if (selectedSexRadio.getText().equals("М")) {
+            sex = "male";
+        }
+        if (selectedSexRadio.getText().equals("Ж")) {
+            sex = "female";
+        }
+
+        List<String> interests = new ArrayList<>();
+        List<Node> checkBoxes = inputInterests.getChildren();
+        for (Node node : checkBoxes) {
+            CheckBox checkBox = (CheckBox) node;
+            if (checkBox.isSelected()) {
+                interests.add(checkBox.getText());
+            }
+        }
+
+        String city = inputCity.getText();
+
+        Person person = new Person(
+                0,
+                login,
+                password,
+                name,
+                surname,
+                age,
+                sex,
+                city,
+                interests);
         try {
+
             PeopleDatabase registerDB = new PeopleDatabase();
-
-            String login = inputLogin.getText();
-            String password = inputPassword.getText();
-            String surname = inputSurname.getText();
-            String name = inputName.getText();
-            int age = Integer.parseInt(inputAge.getText());
-
-            String sex = "";
-            RadioButton selectedSexRadio = (RadioButton) inputSex.getSelectedToggle();
-            if (selectedSexRadio.getText().equals("М")) {
-                sex = "male";
-            }
-            if (selectedSexRadio.getText().equals("Ж")) {
-                sex = "female";
-            }
-
-            List<String> interests = new ArrayList<>();
-            List<Node> checkBoxes = inputInterests.getChildren();
-            for (Node node : checkBoxes) {
-                CheckBox checkBox = (CheckBox) node;
-                if (checkBox.isSelected()) {
-                    interests.add(checkBox.getText());
-                }
-            }
-
-            String city = inputCity.getText();
-
-            Person person = new Person(
-                    0,
-                    login,
-                    password,
-                    name,
-                    surname,
-                    age,
-                    sex,
-                    city,
-                    interests);
-
             registerDB.insertPerson(person);
             new SuccessfulRegisterAlert();
+
         } catch (ConnectException e) {
             new ConnectErrorAlert(e.getMessage());
             e.printStackTrace();

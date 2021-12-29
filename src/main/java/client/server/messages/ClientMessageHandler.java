@@ -1,7 +1,6 @@
 package client.server.messages;
 
 import acquaintance.Person;
-import fxml.controllers.SceneController;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -17,16 +16,21 @@ import java.util.List;
 
 public class ClientMessageHandler extends AbstractMessageHandler {
 
+    private Person loggedInPerson;
+
     public ClientMessageHandler(Socket socket) {
         super(socket);
     }
 
-    public void sendMessage(Message message) {
+    public void sendMessage(Command command, String message) {
         System.out.println("sent to server");
-        System.out.println(message);
+
+        Message messageToServer = new Message(loggedInPerson);
+        messageToServer.setCommand(command);
+        messageToServer.setMessage(message);
 
         try {
-            objectOutputStream.writeObject(message);
+            objectOutputStream.writeObject(messageToServer);
             objectOutputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -44,6 +48,9 @@ public class ClientMessageHandler extends AbstractMessageHandler {
 
                     Command command = messageFromServer.getCommand();
 
+                    if (command.equals(Command.LOG_IN)) {
+                        this.loggedInPerson = messageFromServer.getLoggedInPerson();
+                    }
                     if (command.equals(Command.ONLINE)) {
                         List<String> peopleOnline = messageFromServer.getOnlinePeople();
                         addContentToVBox(peopleOnline, Command.ONLINE.getCommandString(), vBoxOnline);
