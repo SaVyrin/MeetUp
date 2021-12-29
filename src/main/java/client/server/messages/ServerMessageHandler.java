@@ -3,6 +3,7 @@ package client.server.messages;
 import acquaintance.Person;
 import database.FriendsDatabase;
 import exceptions.DBConnectException;
+import client.server.PersonToShowChooser;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
@@ -17,6 +18,8 @@ public class ServerMessageHandler extends AbstractMessageHandler {
     private ObservableList<String> friends;
     private ObservableList<String> onlinePeople;
 
+    private PersonToShowChooser personToShowChooser;
+
     public ServerMessageHandler(Socket socket) {
         super(socket);
     }
@@ -27,6 +30,7 @@ public class ServerMessageHandler extends AbstractMessageHandler {
             case "online" -> onlinePeopleMessage(messageToClient);
             case "pending" -> pendingFriendRequestsMessage(messageToClient);
             case "friends" -> friendsMessage(messageToClient);
+            case "show" -> showMessage(messageToClient);
         }
         try {
             System.out.println("sent to client");
@@ -54,6 +58,7 @@ public class ServerMessageHandler extends AbstractMessageHandler {
 
                     if (command.equals(Command.LOG_IN)) {
                         this.loggedInPerson = messageFromClient.getLoggedInPerson();
+                        this.personToShowChooser = new PersonToShowChooser(loggedInPerson);
                         onlinePeople.add(loggedInPerson.getLogin());
                         sendMessage("pending");
                         sendMessage("friends");
@@ -65,13 +70,15 @@ public class ServerMessageHandler extends AbstractMessageHandler {
                     }
                     if (command.equals(Command.FRIEND_REQ)) {
                         // Check if accept request
-                        String parsedFrom = message.split("-")[0];
-                        String parsedTo = message.split("-")[1];
+                        String pendFrom = loggedInPerson.getLogin();
+                        String pendTo = personToShowChooser.getCurrShownPerson().getLogin();
+
+                        String pend = pendFrom + "-" + pendTo;
                         for (String pending : pendingFriendRequests) {
                             String pendingFrom = pending.split("-")[0];
                             String pendingTo = pending.split("-")[1];
 
-                            if (parsedTo.equals(pendingFrom) && parsedFrom.equals(pendingTo)) {
+                            if (pendTo.equals(pendingFrom) && pendFrom.equals(pendingTo)) {
                                 friends.add(pending);
                                 pendingFriendRequests.remove(pending);
 
@@ -85,12 +92,22 @@ public class ServerMessageHandler extends AbstractMessageHandler {
                         }
 
                         // Add to pending if nothing to accept
-                        String alternativeParsed = message.split("-")[1] + "-" + message.split("-")[0];
-                        if (!pendingFriendRequests.contains(message)
-                                && !friends.contains(message)
+                        String alternativeParsed = pendTo + "-" + pendFrom;
+                        if (!pendingFriendRequests.contains(pend)
+                                && !friends.contains(pend)
                                 && !friends.contains(alternativeParsed)) {
-                            pendingFriendRequests.add(message);
+                            pendingFriendRequests.add(pend);
                         }
+                    }
+
+                    if (command.equals(Command.SHOW)) {
+                        switch (message) {
+                            case "LEFT" -> personToShowChooser.leftChanger();
+                            case "RIGHT" -> personToShowChooser.rightChanger();
+                            case "FRIEND" -> personToShowChooser.chooseFriends();
+                            case "COUPLE" -> personToShowChooser.chooseCouples();
+                        }
+                        sendMessage("show");
                     }
 
                     System.out.println(messageFromClient);
@@ -110,6 +127,7 @@ public class ServerMessageHandler extends AbstractMessageHandler {
     public void setOnlinePeople(ObservableList<String> onlinePeople) {
         this.onlinePeople = onlinePeople;
     }
+
     public void noticeOnlinePeople(ObservableList<String> onlinePeople) {
         setOnlinePeople(onlinePeople);
         sendMessage("online");
@@ -118,6 +136,7 @@ public class ServerMessageHandler extends AbstractMessageHandler {
     public void setPendingFriendRequests(ObservableList<String> pendingFriendRequests) {
         this.pendingFriendRequests = pendingFriendRequests;
     }
+
     public void noticePendingFriendRequests(ObservableList<String> pendingFriendRequests) {
         setPendingFriendRequests(pendingFriendRequests);
         sendMessage("pending");
@@ -126,6 +145,7 @@ public class ServerMessageHandler extends AbstractMessageHandler {
     public void setFriends(ObservableList<String> friends) {
         this.friends = friends;
     }
+
     public void noticeFriends(ObservableList<String> friends) {
         setFriends(friends);
         sendMessage("friends");
@@ -143,9 +163,10 @@ public class ServerMessageHandler extends AbstractMessageHandler {
         List<String> pendingToSend = new ArrayList<>();
         for (String pendingString : pendingFriendRequests) {
             String[] pending = pendingString.split("-");
+            String pendingFrom = pending[0];
             String pendingTo = pending[1];
             if (pendingTo.equals(loggedInPerson.getLogin())) {
-                pendingToSend.add(pendingString);
+                pendingToSend.add(pendingFrom);
             }
         }
         messageToClient.setPendingFriendRequests(pendingToSend);
@@ -168,5 +189,11 @@ public class ServerMessageHandler extends AbstractMessageHandler {
             }
         }
         messageToClient.setFriends(friendsToSend);
+    }
+
+    private void showMessage(Message messageToClient) {
+        messageToClient.setCommand(Command.SHOW);
+        Person personToShowSend = personToShowChooser.getCurrShownPerson();
+        messageToClient.setShow(personToShowSend);
     }
 }

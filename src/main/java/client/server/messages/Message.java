@@ -12,6 +12,7 @@ public class Message implements Serializable {
     private List<String> onlinePeople;
     private List<String> pendingFriendRequests;
     private List<String> friends;
+    private Person show;
 
     public Message(Person loggedInPerson) {
         this.loggedInPerson = loggedInPerson;
@@ -63,5 +64,13 @@ public class Message implements Serializable {
 
     public void setFriends(List<String> friends) {
         this.friends = friends;
+    }
+
+    public Person getShow() {
+        return show;
+    }
+
+    public void setShow(Person show) {
+        this.show = show;
     }
 }

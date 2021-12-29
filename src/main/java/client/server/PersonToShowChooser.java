@@ -1,4 +1,4 @@
-package fxml.controllers.scene.controller;
+package client.server;
 
 import acquaintance.People;
 import acquaintance.Person;
@@ -17,44 +17,51 @@ public class PersonToShowChooser {
     private int currShownPersonIndex = 0;
 
     private final Person loggedInPerson;
+    private Person currShownPerson;
 
     public PersonToShowChooser(Person loggedInPerson) {
         this.loggedInPerson = loggedInPerson;
     }
 
-    public Person leftChanger() {
+    public void leftChanger() {
         if (currShownPersonIndex == 0) {
-            return nextPersonToShow();
+            nextPersonToShow();
+            return;
         }
         currShownPersonIndex--;
-        return nextPersonToShow();
+        nextPersonToShow();
     }
 
-    public Person rightChanger() {
+    public void rightChanger() {
         if (currShownPersonIndex == peopleToShow.size() - 1) {
-            return nextPersonToShow();
+            nextPersonToShow();
+            return;
         }
         currShownPersonIndex++;
-        return nextPersonToShow();
+        nextPersonToShow();
     }
 
-    public Person chooseFriends() {
+    public void chooseFriends() {
         findPeople(new FriendFinder(people, loggedInPerson));
         currShownPersonIndex = 0;
-        return nextPersonToShow();
+        nextPersonToShow();
     }
 
-    public Person chooseCouples() {
+    public void chooseCouples() {
         findPeople(new CoupleFinder(people, loggedInPerson));
         currShownPersonIndex = 0;
-        return nextPersonToShow();
+        nextPersonToShow();
     }
 
     private void findPeople(Finder finder) {
         peopleToShow = finder.find();
     }
 
-    private Person nextPersonToShow() {
-        return peopleToShow.get(currShownPersonIndex);
+    private void nextPersonToShow() {
+        currShownPerson = peopleToShow.get(currShownPersonIndex);
+    }
+
+    public Person getCurrShownPerson() {
+        return currShownPerson;
     }
 }

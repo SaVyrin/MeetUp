@@ -4,24 +4,17 @@ import acquaintance.Person;
 import client.server.Client;
 import client.server.messages.Command;
 import com.example.oop_task_1.Frame;
-import fxml.controllers.scene.controller.PersonToShowChooser;
 import fxml.dialogs.AcquaintanceAlert;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.List;
 
 
 public class SceneController {
@@ -43,10 +36,8 @@ public class SceneController {
     private ImageView avatar;
 
     private Person loggedInPerson;
-    private Person personToShow;
 
     private Client client;
-    private PersonToShowChooser personToShowChooser;
 
     public void setLoggedInPerson(Client client, Person loggedInPerson) {
         this.client = client;
@@ -54,76 +45,38 @@ public class SceneController {
 
         sendMessage(Command.LOG_IN, loggedInPerson.getLogin());
         client.receiveFromServer(onlinePeople, pendingRequests, friends, avatar, description);
-        this.personToShowChooser = new PersonToShowChooser(loggedInPerson);
     }
 
     @FXML
-    private void leftPersonToShowChange() throws MalformedURLException {
-        personToShow = personToShowChooser.leftChanger();
-        showNextPerson();
+    private void leftPersonToShowChange() {
+        sendMessage(Command.SHOW, "LEFT");
     }
 
     @FXML
-    private void rightPersonToShowChange() throws MalformedURLException {
-        personToShow = personToShowChooser.rightChanger();
-        showNextPerson();
+    private void rightPersonToShowChange() {
+        sendMessage(Command.SHOW, "RIGHT");
     }
 
     @FXML
-    private void findFriend() throws MalformedURLException {
-        personToShow = personToShowChooser.chooseFriends();
+    private void findFriend() {
         leftPersonChangeButton.setVisible(true);
         rightPersonChangeButton.setVisible(true);
         acquaintanceButton.setVisible(true);
-        showNextPerson();
+        sendMessage(Command.SHOW, "FRIEND");
     }
 
     @FXML
-    private void findCouple() throws MalformedURLException {
-        personToShow = personToShowChooser.chooseCouples();
+    private void findCouple() {
         leftPersonChangeButton.setVisible(true);
         rightPersonChangeButton.setVisible(true);
         acquaintanceButton.setVisible(true);
-        showNextPerson();
-    }
-
-    private void showNextPerson() throws MalformedURLException {
-        String login = personToShow.getLogin();
-        String name = personToShow.getName();
-        String surname = personToShow.getSurname();
-        int age = personToShow.getAge();
-        String city = personToShow.getCity();
-        String sex = personToShow.getSex();
-
-        File fileLogo = new File("C:/Users/proto/IdeaProjects/OOP_Task_1/src/main/resources/com/example/oop_task_1/images/" + sex + "Ava.jpg");
-        String localUrlLogo = fileLogo.toURI().toURL().toString();
-        Image imageLogo = new Image(localUrlLogo);
-        avatar.setImage(imageLogo);
-
-        StringBuilder descriptionText = new StringBuilder();
-        descriptionText.append("@"+login+"\n");
-        descriptionText.append(name + " " + surname + "\n");
-        descriptionText.append("Возраст: " + age + "\n");
-        descriptionText.append("Город: " + city + "\n");
-        descriptionText.append("Хобби: ");
-
-        List<String> interests = personToShow.getInterests();
-        for (int i = 0; i < interests.size(); i++) {
-            String interest = interests.get(i);
-            descriptionText.append(interest);
-            if (i == interests.size() - 1) {
-                descriptionText.append(".");
-            } else {
-                descriptionText.append(", ");
-            }
-        }
-        description.setText(descriptionText.toString());
+        sendMessage(Command.SHOW, "COUPLE");
     }
 
     @FXML
     private void acquaintance() {
-        sendMessage(Command.FRIEND_REQ, loggedInPerson.getLogin() + "-" + personToShow.getLogin());
-        new AcquaintanceAlert(loggedInPerson, personToShow);
+        sendMessage(Command.FRIEND_REQ, "");
+        new AcquaintanceAlert();
     }
 
     @FXML
@@ -138,19 +91,6 @@ public class SceneController {
     }
 
     private void sendMessage(Command command, String message) {
-        if (!message.isEmpty()) {
-            client.sendToServer(message, loggedInPerson, command);
-        }
-    }
-
-    public static void addContentToVBox(List<String> message, String type, VBox vBox) {
-        Platform.runLater(() -> {
-            vBox.getChildren().clear();
-            for (String str : message) {
-                Label label = new Label(type + str);
-                label.setStyle("-fx-background-color : #99ff99;");
-                vBox.getChildren().add(label);
-            }
-        });
+        client.sendToServer(message, loggedInPerson, command);
     }
 }

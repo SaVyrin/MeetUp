@@ -1,12 +1,11 @@
 package fxml.dialogs;
 
-import acquaintance.Person;
 import javafx.scene.control.Alert;
 
 public class AcquaintanceAlert {
-    public AcquaintanceAlert(Person loggedInPerson, Person personToAcquaintance) {
+    public AcquaintanceAlert() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        String message = loggedInPerson.getName() + " познакомился(ась) с " + personToAcquaintance.getName();
+        String message = "Запрос на добавление в друзья отправлен";
         alert.setHeaderText(message);
         alert.show();
     }

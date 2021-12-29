@@ -6,9 +6,7 @@ import java.net.Socket;
 public abstract class AbstractMessageHandler {
 
     public final Socket socket;
-    //public BufferedReader bufferedReader;
     public ObjectInputStream objectInputStream;
-    //public BufferedWriter bufferedWriter;
     public ObjectOutputStream objectOutputStream;
 
     public AbstractMessageHandler(Socket socket) {
