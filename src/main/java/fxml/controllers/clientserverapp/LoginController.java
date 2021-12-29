@@ -1,8 +1,8 @@
-package fxml.controllers;
+package fxml.controllers.clientserverapp;
 
 import client.server.Client;
 import client.server.messages.Command;
-import com.example.oop_task_1.Frame;
+import com.example.oop_task_1.ClientServerApp;
 import connections.Connection;
 import connections.ServerConnection;
 import exceptions.ConnectException;
@@ -32,7 +32,7 @@ public class LoginController {
             Client client = serverConnection.connect();
             client.sendToServer(Command.LOG_IN, login + Command.SEPARATOR + password);
 
-            FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/scene.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(ClientServerApp.class.getResource("fxml/scene.fxml"));
             Scene secondScene = new Scene(fxmlLoader.load(), 800, 800);
 
             Stage currentStage = (Stage) inputLogin.getScene().getWindow();
@@ -47,7 +47,7 @@ public class LoginController {
 
     @FXML
     private void onRegisterButtonClick() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/register.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(ClientServerApp.class.getResource("fxml/register.fxml"));
         Scene changeScene = new Scene(fxmlLoader.load(), 800, 800);
 
         Stage currentStage = (Stage) inputLogin.getScene().getWindow();

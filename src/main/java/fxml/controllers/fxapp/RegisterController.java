@@ -1,7 +1,7 @@
-package fxml.controllers;
+package fxml.controllers.fxapp;
 
 import acquaintance.Person;
-import com.example.oop_task_1.Frame;
+import com.example.oop_task_1.ClientServerApp;
 import database.PeopleDatabase;
 import exceptions.ConnectException;
 import fxml.dialogs.ConnectErrorAlert;
@@ -41,7 +41,7 @@ public class RegisterController {
 
     @FXML
     private void onLoginButtonClick() throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/login.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(ClientServerApp.class.getResource("fxAppFxml/login.fxml"));
         Scene changeScene = new Scene(fxmlLoader.load(), 800, 800);
 
         Stage currentStage = (Stage) inputLogin.getScene().getWindow();

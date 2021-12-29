@@ -100,7 +100,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.example.oop_task_1/com.example.oop_task_1.Frame</mainClass>
+                            <mainClass>com.example.oop_task_1/com.example.oop_task_1.ClientServerApp</mainClass>
                         </configuration>
                     </execution>
                 </executions>

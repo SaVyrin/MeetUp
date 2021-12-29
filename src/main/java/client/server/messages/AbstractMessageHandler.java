@@ -30,9 +30,11 @@ public abstract class AbstractMessageHandler {
             }
             if (objectInputStream != null) {
                 objectInputStream.close();
+                objectOutputStream = null;
             }
             if (objectOutputStream != null) {
                 objectOutputStream.close();
+                objectInputStream = null;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,7 +42,7 @@ public abstract class AbstractMessageHandler {
         }
     }
 
-    public boolean isConnected(){
-        return socket.isConnected();
+    public boolean isClosed(){
+        return socket.isClosed();
     }
 }

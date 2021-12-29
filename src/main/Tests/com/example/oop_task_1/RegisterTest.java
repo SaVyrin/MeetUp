@@ -12,7 +12,7 @@ public class RegisterTest extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("register.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(ClientServerApp.class.getResource("register.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 800, 800);
         stage.setTitle("Hello!");
         stage.setScene(scene);

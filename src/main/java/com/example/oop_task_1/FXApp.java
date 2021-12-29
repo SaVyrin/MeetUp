@@ -7,10 +7,10 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
-public class Frame extends Application {
+public class FXApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/login.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(ClientServerApp.class.getResource("fxAppFxml/login.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 800, 800);
         stage.setTitle("MeetUp");
         stage.setScene(scene);

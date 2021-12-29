@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="442.0"
       prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="fxml.controllers.RegisterController">
+      fx:controller="fxml.controllers.clientserverapp.RegisterController">
     <TextField fx:id="inputLogin" promptText="Логин"/>
     <TextField fx:id="inputPassword" promptText="Пароль"/>
     <TextField fx:id="inputSurname" promptText="Фамилия"/>

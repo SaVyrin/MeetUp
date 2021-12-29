@@ -98,6 +98,6 @@ public class Server {
     }
 
     private void removeInactiveMessageHandlers() {
-        messageHandlers.removeIf(messageHandler -> !messageHandler.isConnected());
+        messageHandlers.removeIf(messageHandler -> messageHandler.isClosed());
     }
 }

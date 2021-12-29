@@ -1,19 +1,13 @@
-package fxml.controllers;
+package fxml.controllers.clientserverapp;
 
 import client.server.Client;
 import client.server.messages.Command;
-import com.example.oop_task_1.Frame;
 import fxml.dialogs.AcquaintanceAlert;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-
-import java.io.IOException;
 
 
 public class SceneController {
@@ -74,14 +68,9 @@ public class SceneController {
     }
 
     @FXML
-    private void logOutButton() throws IOException {
+    private void logOutButton() {
         sendMessage(Command.LOG_OUT, "");
-
-        FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/login.fxml"));
-        Scene changeScene = new Scene(fxmlLoader.load(), 800, 800);
-
-        Stage currentStage = (Stage) onlinePeople.getScene().getWindow();
-        currentStage.setScene(changeScene);
+        System.exit(0);
     }
 
     private void sendMessage(Command command, String message) {
