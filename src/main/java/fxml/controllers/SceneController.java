@@ -52,7 +52,7 @@ public class SceneController {
         this.client = client;
         this.loggedInPerson = loggedInPerson;
 
-        sendMessage(Command.LOG_IN + Command.SEPARATOR + loggedInPerson.getLogin());
+        sendMessage(Command.LOG_IN, loggedInPerson.getLogin());
         client.receiveFromServer(onlinePeople, pendingRequests, friends, avatar, description);
         this.personToShowChooser = new PersonToShowChooser(loggedInPerson);
     }
@@ -122,13 +122,13 @@ public class SceneController {
 
     @FXML
     private void acquaintance() {
-        sendMessage(Command.FRIEND_REQ + Command.SEPARATOR + loggedInPerson.getLogin() + "-" + personToShow.getLogin());
+        sendMessage(Command.FRIEND_REQ, loggedInPerson.getLogin() + "-" + personToShow.getLogin());
         new AcquaintanceAlert(loggedInPerson, personToShow);
     }
 
     @FXML
     private void logOutButton() throws IOException {
-        sendMessage(Command.LOG_OUT + Command.SEPARATOR + loggedInPerson.getLogin());
+        sendMessage(Command.LOG_OUT, loggedInPerson.getLogin());
 
         FXMLLoader fxmlLoader = new FXMLLoader(Frame.class.getResource("fxml/login.fxml"));
         Scene changeScene = new Scene(fxmlLoader.load(), 800, 800);
@@ -137,9 +137,9 @@ public class SceneController {
         currentStage.setScene(changeScene);
     }
 
-    private void sendMessage(String message) {
+    private void sendMessage(Command command, String message) {
         if (!message.isEmpty()) {
-            client.sendToServer(message);
+            client.sendToServer(message, loggedInPerson, command);
         }
     }
 

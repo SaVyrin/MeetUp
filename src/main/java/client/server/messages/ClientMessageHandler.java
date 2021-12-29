@@ -1,5 +1,6 @@
 package client.server.messages;
 
+import acquaintance.Person;
 import fxml.controllers.SceneController;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -7,8 +8,6 @@ import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ClientMessageHandler extends AbstractMessageHandler {
@@ -17,14 +16,13 @@ public class ClientMessageHandler extends AbstractMessageHandler {
         super(socket);
     }
 
-    public void sendMessage(String message) {
+    public void sendMessage(Message message) {
         System.out.println("sent to server");
         System.out.println(message);
 
         try {
-            bufferedWriter.write(message);
-            bufferedWriter.newLine();
-            bufferedWriter.flush();
+            objectOutputStream.writeObject(message);
+            objectOutputStream.flush();
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Error sending message to server");
@@ -37,24 +35,24 @@ public class ClientMessageHandler extends AbstractMessageHandler {
             while (socket.isConnected()) {
                 try {
                     System.out.println("received from server");
-                    String messageFromServer = bufferedReader.readLine();
+                    Message messageFromServer = (Message) objectInputStream.readObject();
 
-                    String[] parsed = messageFromServer.split(Command.SEPARATOR);
+                    Command command = messageFromServer.getCommand();
 
-                    if (parsed[0].equals(Command.ONLINE.getCommandString())) {
-                        List<String> peopleOnline = new ArrayList<>(Arrays.asList(parsed).subList(1, parsed.length));
+                    if (command.equals(Command.ONLINE)) {
+                        List<String> peopleOnline = messageFromServer.getOnlinePeople();
                         SceneController.addContentToVBox(peopleOnline, Command.ONLINE.getCommandString(), vBoxOnline);
                     }
-                    if (parsed[0].equals(Command.FRIEND_REQ.getCommandString())) {
-                        List<String> pendingRequests = new ArrayList<>(Arrays.asList(parsed).subList(1, parsed.length));
+                    if (command.equals(Command.FRIEND_REQ)) {
+                        List<String> pendingRequests = messageFromServer.getPendingFriendRequests();
                         SceneController.addContentToVBox(pendingRequests, Command.FRIEND_REQ.getCommandString(), vBoxPending);
                     }
-                    if (parsed[0].equals(Command.FRIENDS.getCommandString())) {
-                        List<String> friends = new ArrayList<>(Arrays.asList(parsed).subList(1, parsed.length));
+                    if (command.equals(Command.FRIENDS)) {
+                        List<String> friends = messageFromServer.getFriends();
                         SceneController.addContentToVBox(friends, Command.FRIENDS.getCommandString(), vBoxFriends);
                     }
 
-                } catch (IOException e) {
+                } catch (IOException | ClassNotFoundException e) {
                     e.printStackTrace();
                     System.out.println("Error receiving message from a server");
                     closeEverything();

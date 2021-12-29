@@ -49,14 +49,14 @@ public class Server {
 
         onlinePeople.addListener((ListChangeListener<String>) change -> {
             removeInactiveMessageHandlers();
-            setOnlinePeopleToMessageHandlers();
+            noticeOnlinePeopleToMessageHandlers();
         });
 
         pendingFriendRequests.addListener((ListChangeListener<String>) change -> {
-            setPendingFriendRequestsToMessageHandlers();
+            noticePendingFriendRequestsToMessageHandlers();
         });
         friends.addListener((ListChangeListener<String>) change -> {
-            setFriendsToMessageHandlers();
+            noticeFriendsToMessageHandlers();
         });
 
         while (true) {
@@ -78,21 +78,21 @@ public class Server {
         }
     }
 
-    private void setOnlinePeopleToMessageHandlers() {
+    private void noticeOnlinePeopleToMessageHandlers() {
         for (ServerMessageHandler messageHandler : messageHandlers) {
-            messageHandler.setOnlinePeople(onlinePeople);
+            messageHandler.noticeOnlinePeople(onlinePeople);
         }
     }
 
-    private void setPendingFriendRequestsToMessageHandlers() {
+    private void noticePendingFriendRequestsToMessageHandlers() {
         for (ServerMessageHandler messageHandler : messageHandlers) {
-            messageHandler.setPendingFriendRequests(pendingFriendRequests);
+            messageHandler.noticePendingFriendRequests(pendingFriendRequests);
         }
     }
 
-    private void setFriendsToMessageHandlers() {
+    private void noticeFriendsToMessageHandlers() {
         for (ServerMessageHandler messageHandler : messageHandlers) {
-            messageHandler.setFriends(friends);
+            messageHandler.noticeFriends(friends);
         }
     }
 

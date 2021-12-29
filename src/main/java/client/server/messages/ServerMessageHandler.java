@@ -1,15 +1,18 @@
 package client.server.messages;
 
+import acquaintance.Person;
 import database.FriendsDatabase;
 import exceptions.DBConnectException;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ServerMessageHandler extends AbstractMessageHandler {
 
-    private String loggedInPerson;
+    private Person loggedInPerson;
     private ObservableList<String> pendingFriendRequests;
     private ObservableList<String> friends;
     private ObservableList<String> onlinePeople;
@@ -19,17 +22,16 @@ public class ServerMessageHandler extends AbstractMessageHandler {
     }
 
     public void sendMessage(String message) {
-        String messageToClient = "";
+        Message messageToClient = new Message(loggedInPerson);
         switch (message) {
-            case "online" -> messageToClient = onlinePeopleString();
-            case "pending" -> messageToClient = pendingFriendRequestsString();
-            case "friends" -> messageToClient = friendsString();
+            case "online" -> onlinePeopleMessage(messageToClient);
+            case "pending" -> pendingFriendRequestsMessage(messageToClient);
+            case "friends" -> friendsMessage(messageToClient);
         }
         try {
             System.out.println("sent to client");
-            bufferedWriter.write(messageToClient);
-            bufferedWriter.newLine();
-            bufferedWriter.flush();
+            objectOutputStream.writeObject(messageToClient);
+            objectOutputStream.flush();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -44,25 +46,27 @@ public class ServerMessageHandler extends AbstractMessageHandler {
             while (socket.isConnected()) {
                 try {
                     System.out.println("received from client");
-                    String messageFromClient = bufferedReader.readLine();
+                    Message messageFromClient = (Message) objectInputStream.readObject();
 
-                    String[] parsed = messageFromClient.split(Command.SEPARATOR);
+                    Command command = messageFromClient.getCommand();
+                    Person loggedInPerson = messageFromClient.getLoggedInPerson();
+                    String message = messageFromClient.getMessage();
 
-                    if (parsed[0].equals(Command.LOG_IN.getCommandString())) {
-                        onlinePeople.add(parsed[1]);
-                        loggedInPerson = parsed[1];
+                    if (command.equals(Command.LOG_IN)) {
+                        this.loggedInPerson = messageFromClient.getLoggedInPerson();
+                        onlinePeople.add(loggedInPerson.getLogin());
                         sendMessage("pending");
                         sendMessage("friends");
                     }
-                    if (parsed[0].equals(Command.LOG_OUT.getCommandString())) {
-                        onlinePeople.remove(parsed[1]);
-                        loggedInPerson = null;
+                    if (command.equals(Command.LOG_OUT)) {
+                        onlinePeople.remove(loggedInPerson.getLogin());
+                        this.loggedInPerson = null;
                         closeEverything();
                     }
-                    if (parsed[0].equals(Command.FRIEND_REQ.getCommandString())) {
+                    if (command.equals(Command.FRIEND_REQ)) {
                         // Check if accept request
-                        String parsedFrom = parsed[1].split("-")[0];
-                        String parsedTo = parsed[1].split("-")[1];
+                        String parsedFrom = message.split("-")[0];
+                        String parsedTo = message.split("-")[1];
                         for (String pending : pendingFriendRequests) {
                             String pendingFrom = pending.split("-")[0];
                             String pendingTo = pending.split("-")[1];
@@ -81,11 +85,11 @@ public class ServerMessageHandler extends AbstractMessageHandler {
                         }
 
                         // Add to pending if nothing to accept
-                        String alternativeParsed = parsed[1].split("-")[1] + "-" + parsed[1].split("-")[0];
-                        if (!pendingFriendRequests.contains(parsed[1])
-                                && !friends.contains(parsed[1])
+                        String alternativeParsed = message.split("-")[1] + "-" + message.split("-")[0];
+                        if (!pendingFriendRequests.contains(message)
+                                && !friends.contains(message)
                                 && !friends.contains(alternativeParsed)) {
-                            pendingFriendRequests.add(parsed[1]);
+                            pendingFriendRequests.add(message);
                         }
                     }
 
@@ -96,7 +100,7 @@ public class ServerMessageHandler extends AbstractMessageHandler {
                     System.out.println("Error receiving message from a client");
                     closeEverything();
                     break;
-                } catch (DBConnectException e) {
+                } catch (DBConnectException | ClassNotFoundException e) {
                     e.printStackTrace();
                 }
             }
@@ -105,75 +109,64 @@ public class ServerMessageHandler extends AbstractMessageHandler {
 
     public void setOnlinePeople(ObservableList<String> onlinePeople) {
         this.onlinePeople = onlinePeople;
+    }
+    public void noticeOnlinePeople(ObservableList<String> onlinePeople) {
+        setOnlinePeople(onlinePeople);
         sendMessage("online");
     }
 
     public void setPendingFriendRequests(ObservableList<String> pendingFriendRequests) {
         this.pendingFriendRequests = pendingFriendRequests;
+    }
+    public void noticePendingFriendRequests(ObservableList<String> pendingFriendRequests) {
+        setPendingFriendRequests(pendingFriendRequests);
         sendMessage("pending");
     }
 
     public void setFriends(ObservableList<String> friends) {
         this.friends = friends;
+    }
+    public void noticeFriends(ObservableList<String> friends) {
+        setFriends(friends);
         sendMessage("friends");
     }
 
-    private String onlinePeopleString() {
-        StringBuilder messageToClientBuilder = new StringBuilder();
-        messageToClientBuilder.append(Command.ONLINE).append(Command.SEPARATOR);
-        int count = 0;
-        for (String person : onlinePeople) {
-            messageToClientBuilder.append(person);
-            if (count != onlinePeople.size() - 1) {
-                messageToClientBuilder.append(Command.SEPARATOR);
-            }
-            count++;
-        }
-        return messageToClientBuilder.toString();
+    private void onlinePeopleMessage(Message messageToClient) {
+        messageToClient.setCommand(Command.ONLINE);
+        List<String> onlinePeopleToSend = new ArrayList<>(onlinePeople);
+        messageToClient.setOnlinePeople(onlinePeopleToSend);
     }
 
-    private String pendingFriendRequestsString() {
-        StringBuilder messageToClientBuilder = new StringBuilder();
-        messageToClientBuilder.append(Command.FRIEND_REQ).append(Command.SEPARATOR);
-        int count = 0;
+    private void pendingFriendRequestsMessage(Message messageToClient) {
+        messageToClient.setCommand(Command.FRIEND_REQ);
+
+        List<String> pendingToSend = new ArrayList<>();
         for (String pendingString : pendingFriendRequests) {
             String[] pending = pendingString.split("-");
-            String pendingFrom = pending[0];
             String pendingTo = pending[1];
-            if (loggedInPerson.equals(pendingTo)) {
-                messageToClientBuilder.append(pendingFrom);
-                if (count != pendingFriendRequests.size() - 1) {
-                    messageToClientBuilder.append(Command.SEPARATOR);
-                }
+            if (pendingTo.equals(loggedInPerson.getLogin())) {
+                pendingToSend.add(pendingString);
             }
-            count++;
         }
-        return messageToClientBuilder.toString();
+        messageToClient.setPendingFriendRequests(pendingToSend);
     }
 
-    private String friendsString() {
-        StringBuilder messageToClientBuilder = new StringBuilder();
-        messageToClientBuilder.append(Command.FRIENDS).append(Command.SEPARATOR);
-        int count = 0;
+    private void friendsMessage(Message messageToClient) {
+        messageToClient.setCommand(Command.FRIENDS);
+
+        List<String> friendsToSend = new ArrayList<>();
         for (String friendsString : friends) {
             String[] friendsStringSplitted = friendsString.split("-");
             String friend1 = friendsStringSplitted[0];
             String friend2 = friendsStringSplitted[1];
 
-            if (friend1.equals(loggedInPerson)) {
-                messageToClientBuilder.append(friend2);
-                if (count != friends.size() - 1) {
-                    messageToClientBuilder.append(Command.SEPARATOR);
-                }
+            if (friend1.equals(loggedInPerson.getLogin())) {
+                friendsToSend.add(friend2);
             }
-            if (friend2.equals(loggedInPerson)) {
-                messageToClientBuilder.append(friend1);
-                if (count != friends.size() - 1) {
-                    messageToClientBuilder.append(Command.SEPARATOR);
-                }
+            if (friend2.equals(loggedInPerson.getLogin())) {
+                friendsToSend.add(friend1);
             }
-            count++;
         }
-        return messageToClientBuilder.toString();
+        messageToClient.setFriends(friendsToSend);
     }
 }

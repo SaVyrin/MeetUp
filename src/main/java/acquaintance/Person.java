@@ -1,9 +1,10 @@
 package acquaintance;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
-public class Person {
+public class Person implements Serializable {
     private final int id;
     private final String login;
     private final String password;
