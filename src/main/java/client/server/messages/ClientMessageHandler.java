@@ -82,7 +82,7 @@ public class ClientMessageHandler extends AbstractMessageHandler {
         Platform.runLater(() -> {
             vBox.getChildren().clear();
             for (String str : message) {
-                Label label = new Label(type + str);
+                Label label = new Label(type + "-" + str);
                 label.setStyle("-fx-background-color : #99ff99;");
                 vBox.getChildren().add(label);
             }
@@ -103,7 +103,7 @@ public class ClientMessageHandler extends AbstractMessageHandler {
         avatar.setImage(imageLogo);
 
         StringBuilder descriptionText = new StringBuilder();
-        descriptionText.append("@"+login+"\n");
+        descriptionText.append("@" + login + "\n");
         descriptionText.append(name + " " + surname + "\n");
         descriptionText.append("Возраст: " + age + "\n");
         descriptionText.append("Город: " + city + "\n");

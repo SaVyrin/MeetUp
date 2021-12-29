@@ -2,13 +2,11 @@ package fxml.controllers.fxapp;
 
 import acquaintance.Person;
 import client.server.PersonToShowChooser;
+import database.FriendsDatabase;
 import database.PeopleDatabase;
 import exceptions.DBConnectException;
-import javafx.application.Platform;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.io.File;
@@ -17,13 +15,20 @@ import java.util.List;
 
 public class SceneLogic {
 
-    private Person loggedInPerson;
-    private PersonToShowChooser personToShowChooser;
+    private final Person loggedInPerson;
+    private final PersonToShowChooser personToShowChooser;
 
     public SceneLogic(String login, String password) throws DBConnectException {
         PeopleDatabase peopleDatabase = new PeopleDatabase();
         this.loggedInPerson = peopleDatabase.getPersonFromDB(login, password);
         personToShowChooser = new PersonToShowChooser(loggedInPerson);
+    }
+
+    public void acquaintance() throws DBConnectException {
+        FriendsDatabase friendsDatabase = new FriendsDatabase();
+        String firstPersonLogin = loggedInPerson.getLogin();
+        String secondPersonLogin = personToShowChooser.getCurrShownPerson().getLogin();
+        friendsDatabase.insertTwoFriends(firstPersonLogin, secondPersonLogin);
     }
 
     public void changeLeft(){

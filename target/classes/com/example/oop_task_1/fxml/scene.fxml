@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
 
-<TitledPane animated="false" collapsible="false" ellipsisString="" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="647.0" text="MeetUP" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxml.controllers.SceneController">
+<TitledPane animated="false" collapsible="false" ellipsisString="" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="647.0" text="MeetUP" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxml.controllers.clientserverapp.SceneController">
    <content>
        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
           <children>
@@ -61,7 +61,7 @@
                   <left>
                       <AnchorPane prefHeight="222.0" prefWidth="137.0" style="-fx-background-color: rgb(211,211,211);" BorderPane.alignment="CENTER">
                          <children>
-                             <Button fx:id="leftPersonChangeButton" layoutX="80.0" layoutY="80.0" mnemonicParsing="false" onAction="#leftPersonToShowChange" text="&lt;" textAlignment="CENTER" visible="false" />
+                             <Button fx:id="leftPersonChangeButton" layoutX="80.0" layoutY="96.0" mnemonicParsing="false" onAction="#leftPersonToShowChange" text="&lt;" textAlignment="CENTER" visible="false" />
                          </children>
                       </AnchorPane>
                   </left>

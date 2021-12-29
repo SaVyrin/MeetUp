@@ -1,5 +1,6 @@
 package client.server;
 
+import client.server.messages.AbstractMessageHandler;
 import client.server.messages.Command;
 import client.server.messages.ServerMessageHandler;
 import database.FriendsDatabase;
@@ -98,6 +99,6 @@ public class Server {
     }
 
     private void removeInactiveMessageHandlers() {
-        messageHandlers.removeIf(messageHandler -> messageHandler.isClosed());
+        messageHandlers.removeIf(AbstractMessageHandler::isClosed);
     }
 }

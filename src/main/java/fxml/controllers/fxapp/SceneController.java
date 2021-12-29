@@ -1,14 +1,13 @@
 package fxml.controllers.fxapp;
 
+import exceptions.DBConnectException;
 import fxml.dialogs.AcquaintanceAlert;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.net.MalformedURLException;
-
 
 public class SceneController {
     @FXML
@@ -61,7 +60,8 @@ public class SceneController {
     }
 
     @FXML
-    private void acquaintance() {
+    private void acquaintance() throws DBConnectException {
+        sceneLogic.acquaintance();
         new AcquaintanceAlert();
     }
 }
